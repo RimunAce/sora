@@ -53,6 +53,21 @@
                 </div>
             </div>
 
+            <!-- Favorites Section -->
+            <section class="favorites-section" id="favorites-section" style="display: none;">
+                <div class="favorites-header">
+                    <h2 class="favorites-title">
+                        <i class="fas fa-star"></i>
+                        Your Favorites
+                    </h2>
+                </div>
+                <div class="favorites-container-wrapper" id="favorites-container-wrapper">
+                    <div class="favorites-container" id="favorites-container">
+                        <!-- Favorite game cards will be dynamically inserted here -->
+                    </div>
+                </div>
+            </section>
+
             <!-- Games Section -->
             <section class="games-section" id="games-section">
                 <div class="search-container">
@@ -195,6 +210,20 @@
                         </span>
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Favorite Game Detail Modal -->
+        <div id="favorite-detail-modal" class="favorite-detail-modal hidden">
+            <div class="favorite-detail-backdrop"></div>
+            <div class="favorite-detail-content">
+                <div class="favorite-detail-header">
+                    <h3 id="favorite-detail-title" class="favorite-detail-title">Game Title</h3>
+                    <button id="close-favorite-detail" class="close-favorite-detail-btn">&times;</button>
+                </div>
+                <div id="favorite-detail-body" class="favorite-detail-body">
+                    <!-- Server cards will be dynamically inserted here -->
+                </div>
             </div>
         </div>
 

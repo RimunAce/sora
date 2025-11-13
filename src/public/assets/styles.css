@@ -640,6 +640,289 @@ body {
     overflow: hidden; /* Prevent horizontal scroll on small screens */
 }
 
+/* Favorites Section - compact, non-intrusive, mobile friendly */
+.favorites-section {
+    max-width: var(--container-xl);
+    margin: 0 auto var(--spacing-xl);
+    padding: 0 var(--spacing-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.favorites-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.favorites-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0;
+}
+
+.favorites-title i {
+    color: var(--accent-color);
+    font-size: 1.1em;
+}
+
+/* Wrapper for favorites container with horizontal scrolling (scrollbar at top) */
+.favorites-container-wrapper {
+    transform: rotateX(180deg);
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    background: radial-gradient(circle at top left, rgba(99,102,241,0.14), transparent 70%) rgba(15,23,42,0.98);
+    border-radius: 16px;
+    border: 1px solid rgba(148,163,253,0.2);
+}
+
+.favorites-container-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.favorites-container-wrapper::-webkit-scrollbar-track {
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 4px;
+    margin: 0 2rem;
+}
+
+.favorites-container-wrapper::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.favorites-container-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Horizontal scrolling container - SINGLE ROW ONLY */
+.favorites-container {
+    display: inline-flex;
+    flex-direction: row;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md) var(--spacing-md);
+    transform: rotateX(180deg);
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    min-width: 100%;
+}
+
+.favorites-container::after {
+    content: '';
+    display: block;
+    min-width: var(--spacing-md);
+    flex-shrink: 0;
+}
+
+/* Compact favorite cards - FIXED WIDTH for consistency */
+.favorite-card {
+    background: rgba(15,23,42,0.98);
+    border-radius: 12px;
+    border: 1px solid rgba(148,163,253,0.35);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    flex-shrink: 0;
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    scroll-snap-align: start;
+}
+
+.favorite-card:hover {
+    box-shadow: 0 10px 24px rgba(15,23,42,0.9);
+    border-color: var(--primary-color);
+    background: radial-gradient(circle at top, rgba(99,102,241,0.16), transparent 70%) rgba(9,9,17,1);
+}
+
+.favorite-card-img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    display: block;
+}
+
+.favorite-card-name {
+    padding: 0.55rem 0.6rem 0.6rem;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.6em;
+}
+
+
+
+/* Remove favorite button */
+.favorite-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(15,23,42,0.96);
+    border: 1px solid rgba(239,68,68,0.9);
+    border-radius: 999px;
+    padding: 2px 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    color: #fca5a5;
+    font-size: 0.6rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+    opacity: 0;
+    transform: translateY(-4px);
+}
+
+.favorite-remove i {
+    font-size: 0.55rem;
+}
+
+.favorite-card:hover .favorite-remove {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.favorite-remove:hover {
+    background: #ef4444;
+    color: #0f172a;
+    border-color: #ef4444;
+}
+
+/* Star toggle on main cards */
+.game-banner-image-wrapper {
+    position: relative;
+}
+
+.star-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(15,23,42,0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(148,163,253,0.7);
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(148,163,253,0.9);
+    font-size: 0.8rem;
+    transition: all 0.22s ease;
+    z-index: 5;
+}
+
+.star-toggle:hover {
+    background: rgba(30,64,175,1);
+    color: #fde68a;
+    transform: translateY(-1px) scale(1.06);
+    box-shadow: 0 6px 14px rgba(15,23,42,0.9);
+}
+
+.star-toggle.favorited {
+    background: radial-gradient(circle at 30% 0, #facc15, #ea580c);
+    color: #0f172a;
+    border-color: rgba(234,179,8,0.98);
+    box-shadow: 0 8px 18px rgba(250,204,21,0.35);
+}
+
+.star-toggle.favorited i {
+    text-shadow: 0 0 8px rgba(250,250,210,0.9);
+}
+
+.star-toggle.favorited:hover {
+    transform: translateY(-1px) scale(1.08);
+}
+
+/* Mobile & small screens */
+@media (max-width: 768px) {
+    .favorites-section {
+        padding: 0 var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .favorites-title {
+        font-size: var(--font-size-base);
+    }
+
+
+    .favorites-container {
+        gap: var(--spacing-sm);
+        padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+    }
+
+    .favorite-card {
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
+    }
+
+    .favorite-card-img {
+        height: 80px;
+    }
+
+    .favorite-card-name {
+        font-size: 0.7rem;
+        padding: 0.45rem 0.5rem 0.5rem;
+    }
+
+    .star-toggle {
+        width: 26px;
+        height: 26px;
+        font-size: 0.7rem;
+        top: 6px;
+        right: 6px;
+    }
+
+    .favorite-remove {
+        opacity: 1;
+        transform: translateY(0);
+        padding: 2px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorites-section {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .favorites-container {
+        gap: var(--spacing-xs);
+        padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .favorite-card {
+        width: 140px;
+        min-width: 140px;
+        max-width: 140px;
+    }
+
+    .favorite-card-img {
+        height: 70px;
+    }
+}
+
 .games-section::before,
 .games-section::after {
     content: '';
@@ -954,7 +1237,7 @@ body {
     text-align: center;
     transition: all 0.3s ease;
     cursor: default;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     z-index: 1;
     height: fit-content;
@@ -964,8 +1247,9 @@ body {
 .server-card.expanded {
     background: rgba(99, 102, 241, 0.12);
     border-color: var(--primary-color);
-    z-index: 10;
+    z-index: 20;
     height: auto;
+    overflow: visible;
 }
 
 .server-card-main {
@@ -1069,7 +1353,7 @@ body {
 /* Server Details (Expandable Section) */
 .server-details {
     max-height: 0;
-    overflow: hidden;
+    overflow: visible;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 1;
@@ -1108,6 +1392,17 @@ body {
     z-index: 100;
 }
 
+/* Ensure tooltips are visible above overlapping content */
+.server-card {
+    position: relative;
+    z-index: 1;
+}
+
+.server-card.expanded {
+    z-index: 20;
+}
+
+/* Tooltip layer above banners, gradients, and modals */
 .detail-row::after {
     content: attr(title);
     position: absolute;
@@ -1123,14 +1418,37 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 1001;
+    z-index: 2500; /* raised to avoid being overlapped */
     font-weight: 500;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+.detail-row::after {
+    content: attr(title);
+    position: fixed; /* Changed to fixed to escape container clipping */
+    bottom: auto;
+    top: 50%; /* Position relative to viewport */
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%) translateY(-8px);
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 3000; /* Even higher to ensure visibility */
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    max-width: 200px;
+    text-align: center;
+}
+
 .detail-row:hover::after {
     opacity: 1;
-    transform: translateX(-50%) translateY(-4px);
+    transform: translateX(-50%) translateY(-100%) translateY(-4px);
 }
 
 .detail-icon {
@@ -2376,4 +2694,521 @@ textarea:focus,
         font-size: clamp(0.85rem, 5vw, 1rem);
     }
 }
+
+
+.favorite-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(239, 68, 68, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.favorite-card:hover .favorite-remove {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.favorite-remove:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+}
+
+/* Star Toggle Button */
+.game-banner-image-wrapper {
+    position: relative;
+}
+
+.star-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.star-toggle:hover {
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--warning);
+    transform: scale(1.1);
+}
+
+.star-toggle.favorited {
+    color: var(--warning);
+    background: rgba(245, 158, 11, 0.2);
+}
+
+.star-toggle.favorited:hover {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive adjustments for favorites */
+@media (max-width: 768px) {
+    .favorites-section {
+        padding: 0 var(--spacing-md);
+    }
+    
+    .favorites-container {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+    
+    .favorite-card {
+        min-height: 120px;
+    }
+    
+    .favorite-card-img {
+        height: 70px;
+    }
+    
+    .favorite-card-name {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs);
+    }
+    
+    .star-toggle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorites-section {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .favorites-container {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: var(--spacing-xs);
+    }
+    
+    .favorite-card {
+        min-height: 110px;
+    }
+    
+    .favorite-card-img {
+        height: 60px;
+    }
+    
+    .favorite-remove {
+        width: 20px;
+        height: 20px;
+        font-size: 0.625rem;
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+}
+
+/* Favorite Detail Modal */
+.favorite-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+.favorite-detail-modal.hidden {
+    display: none !important;
+}
+
+.favorite-detail-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+.favorite-detail-content {
+    position: relative;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(99, 102, 241, 0.15);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUpModal {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.favorite-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+}
+
+.favorite-detail-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    background: linear-gradient(135deg, #94a3fd 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.close-favorite-detail-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 2rem;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+.close-favorite-detail-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.favorite-detail-body {
+    padding: 1.5rem 2rem 2rem;
+    overflow-y: auto;
+    max-height: calc(85vh - 100px);
+}
+
+.favorite-detail-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.favorite-detail-body::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 4px;
+}
+
+.favorite-detail-body::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.favorite-detail-server-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 14px;
+    padding: 1.1rem 1.1rem 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.25s ease;
+    display: grid;
+    /* Explicit 2-column grid for desktop: left column (labels/values), right (countdown/reset) */
+    grid-template-columns: 1fr;
+    row-gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.favorite-detail-server-card:last-child {
+    margin-bottom: 0;
+}
+
+.favorite-detail-server-card:hover {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+}
+
+.favorite-detail-server-header {
+    grid-column: 1 / -1;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1.1rem;
+    margin: 0 0 0.4rem 0;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.18);
+    background: transparent;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    text-align: left;
+}
+
+.favorite-detail-server-header:hover {
+    background: rgba(15,23,42,0.96);
+}
+
+.favorite-detail-server-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.favorite-detail-server-name {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.favorite-detail-server-timezone {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: rgba(148,163,253,0.12);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.favorite-detail-server-timezone i {
+    font-size: 0.7rem;
+    color: var(--primary-color);
+}
+
+.favorite-detail-toggle-icon {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.favorite-detail-server-card.collapsed .favorite-detail-toggle-icon {
+    transform: rotate(180deg);
+    color: var(--text-muted);
+}
+
+.favorite-detail-server-body {
+    padding: 0.2rem 1.1rem 0.9rem;
+}
+
+.favorite-detail-server-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.favorite-detail-server-timezone {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+}
+
+/* Map specific rows into grid columns to FORCE 2-column layout
+   DOM order within each .favorite-detail-server-card:
+   1) Daily Reset
+   2) Time Until Reset
+   3) Server Current Time
+   4) Reset in Your Timezone
+*/
+.favorite-detail-info-item {
+    display: flex;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-bottom: none;
+}
+
+.favorite-detail-label {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.favorite-detail-value,
+.favorite-detail-countdown {
+    margin-left: auto;
+    text-align: right;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.favorite-detail-countdown {
+    background: rgba(236, 72, 153, 0.12);
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+    font-size: 1.05rem;
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+
+.favorite-detail-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    flex: 1;
+}
+
+.favorite-detail-value {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.favorite-detail-countdown {
+    font-size: 0.98rem;
+    color: var(--accent-color);
+    font-weight: 700;
+    font-family: 'Monaco', 'Menlo', monospace;
+    background: rgba(236, 72, 153, 0.16);
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+    text-align: right;
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .favorite-detail-content {
+        width: 95%;
+        max-width: none;
+        max-height: 90vh;
+    }
+
+    .favorite-detail-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .favorite-detail-title {
+        font-size: 1.25rem;
+    }
+
+    .favorite-detail-body {
+        padding: 1.25rem 1.5rem 1.5rem;
+        max-height: calc(90vh - 90px);
+    }
+
+    .favorite-detail-server-card {
+        padding: 0.75rem 0.75rem 0.9rem;
+    }
+
+    .favorite-detail-server-body {
+        padding: 0.2rem 0.75rem 0.85rem;
+    }
+
+    .favorite-detail-server-name {
+        font-size: 1rem;
+    }
+
+    .favorite-detail-countdown {
+        font-size: 0.95rem;
+        padding: 0.35rem 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorite-detail-header {
+        padding: 1rem;
+    }
+
+    .favorite-detail-title {
+        font-size: 1.125rem;
+    }
+
+    .favorite-detail-body {
+        padding: 1rem;
+    }
+
+    .favorite-detail-server-card {
+        padding: 0.7rem 0.7rem 0.85rem;
+    }
+
+    .favorite-detail-server-body {
+        padding: 0.2rem 0.7rem 0.7rem;
+    }
+
+    .favorite-detail-server-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .favorite-detail-server-timezone {
+        font-size: 0.75rem;
+    }
+
+    .favorite-detail-label {
+        font-size: 0.8rem;
+    }
+
+    .favorite-detail-value {
+        font-size: 0.9rem;
+    }
+
+    .favorite-detail-countdown {
+        font-size: 0.9rem;
+        padding: 0.35rem 0.6rem;
+        margin-top: 0.2rem;
+        align-self: flex-end;
+    }
+
+    .favorite-detail-reset-info,
+    .favorite-detail-countdown-info,
+    .favorite-detail-current-time-info,
+    .favorite-detail-user-reset-info {
+        grid-column: 1 / -1; /* full width rows on very small screens */
+    }
 }

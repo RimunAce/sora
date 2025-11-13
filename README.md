@@ -32,7 +32,8 @@ Just load it up, select your timezone, and see countdown timers for each game se
 - 3. Mobile-friendly design
 - 4. Easy to extend with more games
 - 5. Discord webhook - Request and Report
-- 6. ... and many more planned
+- 6. Favorite listing
+- 7. ... and many more planned
 
 ## Tech Stack
 
