@@ -1,0 +1,379 @@
+# Gacha Games Server Reset Times Configuration
+# Format: List of games with their server regions and reset times
+# games:
+#   - id: unique-game-id
+#   name: Game Name
+#   description: Brief description of the game
+#   banner: /path/to/game/banner.jpg
+#   servers:
+#     - name: Server Region Name
+#     timezone: Timezone abbreviation or UTC offset
+#     offset: Numeric UTC offset
+#     dailyReset: "HH:MM" (24-hour format)
+
+games:
+  - id: genshin-impact
+    name: Genshin Impact
+    description: Open-world action RPG
+    banner: /assets/images/games/genshin-impact.jpg
+    servers:
+      - name: America
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "04:00"
+      - name: Europe
+        timezone: UTC+1
+        offset: 1
+        dailyReset: "04:00"
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: TW/HK/MO
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+
+  - id: honkai-star-rail
+    name: "Honkai: Star Rail"
+    description: Space fantasy RPG
+    banner: /assets/images/games/honkai-star-rail.jpg
+    servers:
+      - name: America
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "04:00"
+      - name: Europe
+        timezone: UTC+1
+        offset: 1
+        dailyReset: "04:00"
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: TW/HK/MO
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+
+  - id: zenless-zone-zero
+    name: Zenless Zone Zero
+    description: Urban fantasy action RPG
+    banner: /assets/images/games/zenless-zone-zero.jpg
+    servers:
+      - name: America
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "04:00"
+      - name: Europe
+        timezone: UTC+1
+        offset: 1
+        dailyReset: "04:00"
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: TW/HK/MO
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+
+  - id: stella-sora
+    name: Stella Sora
+    description: Cross-platform fantasy RPG by Yostar
+    banner: /assets/images/games/stella-sora.webp
+    servers:
+      - name: Global
+        timezone: UTC-7
+        offset: -7
+        dailyReset: "13:00"
+
+  - id: girls-frontline-2
+    name: "Girls' Frontline 2: Exilium"
+    description: Tactical 3D strategy RPG by Sunborn
+    banner: /assets/images/games/gfl2.webp
+    servers:
+      - name: Darkwinter
+        timezone: UTC-8
+        offset: -8
+        dailyReset: "01:00"
+      - name: Haoplay Global
+        timezone: UTC-8
+        offset: -8
+        dailyReset: "21:00"
+      - name: Haoplay Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "05:00"
+      - name: Haoplay Japan
+        timezone: JST
+        offset: 9
+        dailyReset: "05:00"
+      - name: Haoplay Korea
+        timezone: KST
+        offset: 9
+        dailyReset: "05:00"
+
+  - id: arknights
+    name: Arknights
+    description: Tower defense strategy RPG by Hypergryph
+    banner: /assets/images/games/arknights.jpg
+    servers:
+      - name: EN (Global)
+        timezone: UTC-7
+        offset: -7
+        dailyReset: "04:00"
+      - name: JP
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+      - name: KR
+        timezone: KST
+        offset: 9
+        dailyReset: "04:00"
+      - name: CN
+        timezone: CST
+        offset: 8
+        dailyReset: "04:00"
+      - name: TW/HK/MO
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+
+  - id: chaos-zero-nightmare
+    name: Chaos Zero Nightmare
+    description: Roguelike deckbuilder RPG set in a dark sci-fi fantasy universe
+    banner: /assets/images/games/chaos-zero-nightmare.webp
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "18:00"
+
+  - id: trickcal-chibi-go
+    name: "Trickcal: Chibi Go"
+    description: Chibi-style RPG combining turn-based strategy with auto-chess mechanics
+    banner: /assets/images/games/trickcal-chibi-go.webp
+    servers:
+      - name: Global
+        timezone: UTC+9
+        offset: 9
+        dailyReset: "04:00"
+
+  - id: umamusume-pretty-derby
+    name: "Umamusume: Pretty Derby"
+    description: Racing RPG featuring anthropomorphic horse girls in a gacha system
+    banner: /assets/images/games/umamusume-pretty-derby.jpg
+    servers:
+      - name: JP
+        timezone: JST
+        offset: 9
+        dailyReset: "00:00"
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "15:00"
+
+  - id: wuthering-waves
+    name: Wuthering Waves
+    description: Open-world action RPG with gacha elements and combat system
+    banner: /assets/images/games/wuthering-waves.jpg
+    servers:
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: Europe
+        timezone: UTC+1
+        offset: 1
+        dailyReset: "04:00"
+      - name: America
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "04:00"
+      - name: SEA
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: HMT
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+    
+  - id: guardian-tales
+    name: Guardian Tales
+    description: Action adventure RPG with pixel art and puzzle elements
+    banner: /assets/images/games/guardian-tales.jpg
+    servers:
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "00:00"
+      - name: North America
+        timezone: PDT
+        offset: -8
+        dailyReset: "00:00"
+      - name: Europe
+        timezone: UTC
+        offset: 0
+        dailyReset: "00:00"
+      - name: Oceania
+        timezone: AET
+        offset: 10
+        dailyReset: "00:00"
+      - name: Latin America
+        timezone: BRT
+        offset: -3
+        dailyReset: "00:00"
+
+  - id: azur-lane
+    name: Azur Lane
+    description: Side-scrolling naval combat RPG featuring shipgirls
+    banner: /assets/images/games/azur-lane.jpg
+    servers:
+      - name: EN
+        timezone: UTC-7
+        offset: -7
+        dailyReset: "00:00"
+      - name: CN
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "00:00"
+      - name: JP
+        timezone: JST
+        offset: 9
+        dailyReset: "00:00"
+
+  - id: girls-frontline-neural-cloud
+    name: "Girls' Frontline: Neural Cloud"
+    description: Auto-battler RPG featuring android tacticians and their combat dolls
+    banner: /assets/images/games/girls-frontline-neural-cloud.webp
+    servers:
+      - name: EN
+        timezone: UTC-8
+        offset: -8
+        dailyReset: "05:00"
+      - name: CN
+        timezone: CST
+        offset: 8
+        dailyReset: "05:00"
+
+  - id: punishing-gray-raven
+    name: "Punishing: Gray Raven"
+    description: Action RPG with anime-style combat system and character collection
+    banner: /assets/images/games/punishing-gray-raven.jpg
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "05:00"
+      - name: China & Taiwan
+        timezone: CST
+        offset: 8
+        dailyReset: "04:00"
+      - name: Japan
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+
+  - id: resonance-solstice
+    name: Resonance Solstice
+    description: Train simulation adventure RPG combining real-time card battles with business simulation
+    banner: /assets/images/games/resonance-solstice.webp
+    servers:
+      - name: Global
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "05:00"
+
+  - id: snowbreak-containment-zone
+    name: "Snowbreak: Containment Zone"
+    description: 3D action RPG with harem romance elements and tactical combat
+    banner: /assets/images/games/snowbreak-containment-zone.jpg
+    servers:
+      - name: Global
+        timezone: UTC-8
+        offset: -8
+        dailyReset: "04:00"
+
+  - id: tower-of-fantasy
+    name: Tower of Fantasy
+    description: Open-world MMORPG with sci-fi and fantasy elements
+    banner: /assets/images/games/tower-of-fantasy.jpg
+    servers:
+      - name: Global
+        timezone: EDT
+        offset: -4
+        dailyReset: "05:00"
+
+  - id: nikke
+    name: "GODDESS OF VICTORY: NIKKE"
+    description: Sci-fi RPG shooter featuring collectible maidens
+    banner: /assets/images/games/nikke.webp
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "20:00"
+
+  - id: project-sekai
+    name: "Project SEKAI COLORFUL STAGE!"
+    description: Rhythm game featuring Hatsune Miku and virtual singers
+    banner: /assets/images/games/project-sekai.jpg
+    servers:
+      - name: Japan
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+      - name: Global/EN
+        timezone: PST
+        offset: -8
+        dailyReset: "04:00"
+
+  - id: aether-gazer
+    name: Aether Gazer
+    description: Action RPG with deep combat system
+    banner: /assets/images/games/aether-gazer.jpg
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "12:00"
+
+  - id: reverse-1999
+    name: "Reverse: 1999"
+    description: Time-travel RPG with unique card-based combat system
+    banner: /assets/images/games/reverse-1999.jpg
+    servers:
+      - name: Global
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "05:00"
+
+  - id: limbus-company
+    name: "Limbus Company"
+    description: RPG adventure featuring 12 Sinners in a dystopian world
+    banner: /assets/images/games/limbus-company.jpg
+    servers:
+      - name: Global
+        timezone: KST
+        offset: 9
+        dailyReset: "06:00"
+
+  - id: blue-archive
+    name: Blue Archive
+    description: Youth X Academy X Military RPG
+    banner: /assets/images/games/blue-archive.jpg
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "19:00"
+      - name: Japan
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+      - name: China
+        timezone: CST
+        offset: 8
+        dailyReset: "20:00"

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora - Gacha Server Time Tracker</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="/" class="logo-link">
+                    <img src="/assets/images/banner.png" alt="Sora" class="logo-banner">
+                </a>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="games">Games</a>
+                    <a href="#" class="nav-link" data-section="about">About</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-clock">
+                       <div class="hero-timezone-label">Your Timezone: <span id="timezone-selector" class="timezone-selector">Auto-detect</span></div>
+                       <div id="hero-time" class="hero-clock-time">--:--:--</div>
+                       <div id="hero-date" class="hero-clock-date">Loading local time...</div>
+                   </div>
+                </div>
+            </section>
+
+            <!-- Timezone Selector Popup -->
+            <div id="timezone-popup" class="timezone-popup hidden">
+                <div class="timezone-popup-content">
+                    <div class="timezone-popup-header">
+                        <h3>Select Timezone</h3>
+                        <button id="close-timezone-popup" class="close-popup-btn">&times;</button>
+                    </div>
+                    <div class="timezone-search">
+                        <input type="text" id="timezone-search-input" placeholder="Search timezone..." class="timezone-search-input">
+                    </div>
+                    <div id="timezone-list" class="timezone-list">
+                        <!-- Timezone options will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Games Section -->
+            <section class="games-section" id="games-section">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="game-search" placeholder="Search for a game..." class="search-input">
+                    </div>
+                </div>
+
+                <div class="games-container-wrapper">
+                    <div class="games-container" id="games-container">
+                        <!-- Game banners will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Request Game Button -->
+                <div class="request-game-section">
+                    <p class="request-game-text">Did not find your game?</p>
+                    <div class="action-buttons">
+                        <button id="request-game-btn" class="request-game-btn">
+                            <i class="fas fa-plus-circle"></i>
+                            Request Game
+                        </button>
+                        <button id="report-issue-btn" class="report-issue-btn">
+                            <i class="fas fa-flag"></i>
+                            Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="about-section hidden" id="about-section">
+                <div class="about-content">
+                    <h2 class="about-title">About Sora</h2>
+                    <p class="about-description">
+                        Sora is your companion for tracking <s>gacha</s> game server reset times. 
+                        Providing accurate, real-time information so you never miss your daily rewards, 
+                        events, or limited-time content. However, some or all might find the naming choice a bit off base.
+                        No relation with the AI itself, the literal translation of "Sky" from Japanese, or any other existing entities named Sora.
+                    </p>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <h3>Global Coverage</h3>
+                                <p>Support for games across all regions</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h3>Real-time Updates</h3>
+                                <p>Live countdown to server resets</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <div>
+                                <h3>Mobile Friendly</h3>
+                                <p>Optimized for all devices</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fab fa-github"></i>
+                            <div>
+                                <h3>Open-Source</h3>
+                                <p>Contributions, updates, and improvements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Game Request Modal -->
+        <div id="game-request-modal" class="game-request-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Request a Game</h3>
+                    <button id="close-request-modal" class="close-modal-btn">&times;</button>
+                </div>
+                <form id="game-request-form" class="game-request-form">
+                    <div class="form-group">
+                        <label for="game-name">Game Name *</label>
+                        <input type="text" id="game-name" name="gameName" placeholder="e.g., Epic Seven" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="game-region">Game Region and Timezone *</label>
+                        <input type="text" id="game-region" name="gameRegion" placeholder="e.g., Global (UTC-8)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reset-time">Game Daily Reset Time *</label>
+                        <input type="text" id="reset-time" name="resetTime" placeholder="e.g., 04:00 or 4:00 AM" required>
+                    </div>
+                    <button type="submit" id="submit-request-btn" class="submit-request-btn">
+                        <span class="btn-text">Submit Request</span>
+                        <span class="btn-loader hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        <span class="btn-success hidden">
+                            <i class="fas fa-check-circle"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Report Issue Modal -->
+        <div id="report-issue-modal" class="report-issue-modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Report an Issue</h3>
+                    <button id="close-report-modal" class="close-modal-btn">&times;</button>
+                </div>
+                <form id="report-issue-form" class="report-issue-form">
+                    <div class="form-group">
+                        <label for="game-select">Select Game *</label>
+                        <div class="styled-select-wrapper">
+                            <select id="game-select" name="game" class="styled-select" required>
+                                <option value="">Choose a game...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="issue-description">Issue Description *</label>
+                        <textarea id="issue-description" name="issueDescription"
+                                  placeholder="Please describe the issue you're experiencing..."
+                                  rows="5" required></textarea>
+                    </div>
+                    <button type="submit" id="submit-report-btn" class="submit-report-btn">
+                        <span class="btn-text">Submit Report</span>
+                        <span class="btn-loader hidden">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                        <span class="btn-success hidden">
+                            <i class="fas fa-check-circle"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Confetti Canvas -->
+        <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Sora. Made with ❤️ for gacha gamers</p>
+                <div class="footer-links">
+                    <a href="https://github.com/RimunAce/sora" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="#" class="footer-link">API</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/assets/app.js?v=7"></script>
+</body>
+</html>
