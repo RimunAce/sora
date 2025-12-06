@@ -377,3 +377,13 @@ games:
         timezone: CST
         offset: 8
         dailyReset: "20:00"
+
+  - id: overfield
+    name: OverField
+    description: Chibi-style casual gacha RPG with cute dessert-themed rewards
+    banner: /assets/images/games/overfield.jpg
+    servers:
+      - name: Global
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "05:00"
