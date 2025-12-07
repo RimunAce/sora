@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sora | Gacha Game Daily Reset Time Tracker</title>
-    <meta name="description" content="Track daily reset times for popular gacha games like Genshin Impact, Honkai: Star Rail, and more. See countdowns in your local timezone.">
-    <meta name="keywords" content="gacha game reset time, daily reset, server time, Genshin Impact, Honkai Star Rail, Blue Archive, Arknights">
+    <meta name="description"
+        content="Track daily reset times for popular gacha games like Genshin Impact, Honkai: Star Rail, and more. See countdowns in your local timezone.">
+    <meta name="keywords"
+        content="gacha game reset time, daily reset, server time, Genshin Impact, Honkai Star Rail, Blue Archive, Arknights">
     <link rel="canonical" href="https://sora-time.xyz/">
 
     <!-- Open Graph -->
@@ -40,6 +43,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
@@ -61,10 +65,11 @@
             <section class="hero">
                 <div class="hero-content">
                     <div class="hero-clock">
-                       <div class="hero-timezone-label">Your Timezone: <span id="timezone-selector" class="timezone-selector">Auto-detect</span></div>
-                       <div id="hero-time" class="hero-clock-time">--:--:--</div>
-                       <div id="hero-date" class="hero-clock-date">Loading local time...</div>
-                   </div>
+                        <div class="hero-timezone-label">Your Timezone: <span id="timezone-selector"
+                                class="timezone-selector">Auto-detect</span></div>
+                        <div id="hero-time" class="hero-clock-time">--:--:--</div>
+                        <div id="hero-date" class="hero-clock-date">Loading local time...</div>
+                    </div>
                 </div>
             </section>
 
@@ -76,7 +81,8 @@
                         <button id="close-timezone-popup" class="close-popup-btn">&times;</button>
                     </div>
                     <div class="timezone-search">
-                        <input type="text" id="timezone-search-input" placeholder="Search timezone..." class="timezone-search-input">
+                        <input type="text" id="timezone-search-input" placeholder="Search timezone..."
+                            class="timezone-search-input">
                     </div>
                     <div id="timezone-list" class="timezone-list">
                         <!-- Timezone options will be populated here -->
@@ -113,7 +119,7 @@
                         <!-- Game banners will be dynamically inserted here -->
                     </div>
                 </div>
-                
+
                 <!-- Request Game Button -->
                 <div class="request-game-section">
                     <p class="request-game-text">Did not find your game?</p>
@@ -135,10 +141,12 @@
                 <div class="about-content">
                     <h2 class="about-title">About Sora</h2>
                     <p class="about-description">
-                        Sora is your companion for tracking <s>gacha</s> game server reset times. 
-                        Providing accurate, real-time information so you never miss your daily rewards, 
-                        events, or limited-time content. However, some or all might find the naming choice a bit off base.
-                        No relation with the AI itself, the literal translation of "Sky" from Japanese, or any other existing entities named Sora.
+                        Sora is your companion for tracking <s>gacha</s> game server reset times.
+                        Providing accurate, real-time information so you never miss your daily rewards,
+                        events, or limited-time content. However, some or all might find the naming choice a bit off
+                        base.
+                        No relation with the AI itself, the literal translation of "Sky" from Japanese, or any other
+                        existing entities named Sora.
                     </p>
                     <div class="features-list">
                         <div class="feature-item">
@@ -189,11 +197,13 @@
                     </div>
                     <div class="form-group">
                         <label for="game-region">Game Region and Timezone *</label>
-                        <input type="text" id="game-region" name="gameRegion" placeholder="e.g., Global (UTC-8)" required>
+                        <input type="text" id="game-region" name="gameRegion" placeholder="e.g., Global (UTC-8)"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="reset-time">Game Daily Reset Time *</label>
-                        <input type="text" id="reset-time" name="resetTime" placeholder="e.g., 04:00 or 4:00 AM" required>
+                        <input type="text" id="reset-time" name="resetTime" placeholder="e.g., 04:00 or 4:00 AM"
+                            required>
                     </div>
                     <button type="submit" id="submit-request-btn" class="submit-request-btn">
                         <span class="btn-text">Submit Request</span>
@@ -228,8 +238,7 @@
                     <div class="form-group">
                         <label for="issue-description">Issue Description *</label>
                         <textarea id="issue-description" name="issueDescription"
-                                  placeholder="Please describe the issue you're experiencing..."
-                                  rows="5" required></textarea>
+                            placeholder="Please describe the issue you're experiencing..." rows="5" required></textarea>
                     </div>
                     <button type="submit" id="submit-report-btn" class="submit-report-btn">
                         <span class="btn-text">Submit Report</span>
@@ -266,13 +275,15 @@
             <div class="footer-content">
                 <p>&copy; 2025 Sora. Made with ❤️ for gacha gamers</p>
                 <div class="footer-links">
-                    <a href="https://github.com/RimunAce/sora" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    <a href="https://github.com/RimunAce/sora" class="footer-link" target="_blank"
+                        rel="noopener noreferrer">GitHub</a>
                     <a href="#" class="footer-link">API</a>
                 </div>
             </div>
         </footer>
     </div>
 
-    <script src="/assets/app.js?v=7"></script>
+    <script src="/assets/app.js?v=8"></script>
 </body>
+
 </html>

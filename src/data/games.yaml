@@ -387,3 +387,97 @@ games:
         timezone: UTC+8
         offset: 8
         dailyReset: "05:00"
+
+  - id: duet-night-abyss
+    name: Duet Night Abyss
+    description: High-freedom fantasy adventure RPG
+    banner: /assets/images/games/duetnightabyss.jpg
+    servers:
+      - name: America
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "05:00"
+      - name: Europe
+        timezone: UTC+1
+        offset: 1
+        dailyReset: "05:00"
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "05:00"
+      - name: HMT
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "05:00"
+      - name: SEA
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "05:00"
+
+  - id: brown-dust-2
+    name: Brown Dust 2
+    description: Adventure RPG with high-quality yet questionable 2D graphics
+    banner: /assets/images/games/brown-dust-2.webp
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "00:00"
+
+  - id: echocalypse
+    name: "Echocalypse: The Scarlet Covenant"
+    description: Post-apocalyptic sci-fi mobile strategy RPG
+    banner: /assets/images/games/echocalypse.jpg
+    servers:
+      - name: EN
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "00:00"
+
+  - id: granblue-fantasy
+    name: Granblue Fantasy
+    description: Classic turn-based JRPG
+    banner: /assets/images/games/gbf.jpg
+    servers:
+      - name: WEB
+        timezone: JST
+        offset: 9
+        dailyReset: "05:00"
+
+  - id: heaven-burns-red
+    name: Heaven Burns Red
+    description: Dramatic RPG with a deep, emotional story
+    banner: /assets/images/games/hbr.jpg
+    servers:
+      - name: Global
+        timezone: UTC-7
+        offset: -7
+        dailyReset: "00:00"
+      - name: JP
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+      - name: CN
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+
+  - id: afk-arena
+    name: AFK Arena
+    description: Casual idle RPG with unique art style
+    banner: /assets/images/games/afk-arena.webp
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "00:00"
+
+  - id: afk-journey
+    name: AFK Journey
+    description: Ethereal fantasy RPG with open-world exploration
+    banner: /assets/images/games/afk-journey.jpg
+    servers:
+      - name: Global
+        timezone: UTC
+        offset: 0
+        dailyReset: "00:00"
