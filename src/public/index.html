@@ -55,6 +55,9 @@
                 <nav class="nav">
                     <a href="#" class="nav-link active" data-section="games">Games</a>
                     <a href="#" class="nav-link" data-section="about">About</a>
+                    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
                 </nav>
             </div>
         </header>
@@ -267,6 +270,104 @@
             </div>
         </div>
 
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="settings-modal hidden">
+            <div class="settings-modal-backdrop"></div>
+            <div class="settings-modal-content">
+                <div class="settings-modal-header">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <button id="close-settings-modal" class="close-modal-btn"
+                        aria-label="Close settings">&times;</button>
+                </div>
+                <div class="settings-modal-body">
+                    <!-- Data Management Section -->
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-database"></i>
+                            Data Management
+                        </h4>
+                        <p class="settings-section-desc">Export your favorites and settings to a file, or import from a
+                            previous backup. Your data never leaves your device.</p>
+                        <div class="settings-data-actions">
+                            <button id="export-config-btn" class="settings-action-btn export-btn">
+                                <i class="fas fa-download"></i>
+                                <span>Export Config</span>
+                            </button>
+                            <div class="import-wrapper">
+                                <input type="file" id="import-config-input" accept=".json" class="import-file-input">
+                                <label for="import-config-input" class="settings-action-btn import-btn">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Import Config</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="import-status" class="import-status hidden"></div>
+                    </section>
+
+                    <!-- Display Preferences Section -->
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-sliders-h"></i>
+                            Display Preferences
+                        </h4>
+                        <div class="settings-option">
+                            <div class="settings-option-info">
+                                <span class="settings-option-label">24-Hour Time Format</span>
+                                <span class="settings-option-desc">Display times as 14:00 instead of 2:00 PM</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-24h" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-option-info">
+                                <span class="settings-option-label">Compact Mode</span>
+                                <span class="settings-option-desc">Show smaller game cards for more density</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-compact">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="settings-option">
+                            <div class="settings-option-info">
+                                <span class="settings-option-label">Show Seconds in Countdown</span>
+                                <span class="settings-option-desc">Display seconds in reset countdowns</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-seconds" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Hidden Servers Section -->
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-eye-slash"></i>
+                            Hidden Servers
+                        </h4>
+                        <p class="settings-section-desc">Servers you've hidden will appear here. Click to restore.</p>
+                        <div id="hidden-servers-list" class="hidden-servers-list">
+                            <p class="no-hidden-servers">No hidden servers</p>
+                        </div>
+                    </section>
+
+                    <!-- About Section -->
+                    <section class="settings-section settings-about">
+                        <p class="settings-version">Version 1.2.0</p>
+                        <div class="settings-links">
+                            <a href="https://github.com/RimunAce/sora" target="_blank" rel="noopener noreferrer"
+                                class="settings-link">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
         <!-- Confetti Canvas -->
         <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
 
@@ -283,7 +384,7 @@
         </footer>
     </div>
 
-    <script src="/assets/app.js?v=8"></script>
+    <script src="/assets/app.js?v=11"></script>
 </body>
 
 </html>

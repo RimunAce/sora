@@ -32,8 +32,13 @@ Just load it up, select your timezone, and see countdown timers for each game se
 - 3. Mobile-friendly design
 - 4. Easy to extend with more games
 - 5. Discord webhook - Request and Report
-- 6. Favorite listing
-- 7. ... and many more planned
+- 6. Import/Export your favorites and settings
+- 7. Hide specific servers you don't play
+- 8. Customization: 24h toggle, seconds display, and more
+
+## Privacy Policy
+
+Sora operates on a **Local-First** model. All your data (favorites, settings, hidden servers) is stored entirely in your browser's `localStorage`. We do not track you, and your data never leaves your device unless you explicitly export it.
 
 ## Tech Stack
 
