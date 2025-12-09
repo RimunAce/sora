@@ -104,7 +104,6 @@ const DailiesApp = {
             }
 
             // Check if notification banner was dismissed
-            // Check if notification banner was dismissed
             const bannerDismissed = localStorage.getItem('sora_notification_banner_dismissed');
             const banner = document.getElementById('notification-banner');
             if (banner && bannerDismissed !== 'true') {
@@ -588,20 +587,20 @@ const DailiesApp = {
             <div class="game-checklist-header">
                 <div class="game-checklist-header-row">
                     <div class="game-checklist-info">
-                        <h3 class="game-checklist-name">${game.name}</h3>
+                        <h3 class="game-checklist-name">${this.escapeHtml(game.name)}</h3>
                         <div class="game-checklist-server">
                             <i class="fas fa-server"></i>
-                            ${server.name} (${server.timezone})
+                            ${this.escapeHtml(server.name)} (${this.escapeHtml(server.timezone)})
                         </div>
                     </div>
                     <div class="game-checklist-actions">
                         <button class="game-action-btn notify-btn" title="Set reset notification" 
-                                data-game-id="${game.id}" data-server-name="${server.name}">
+                                data-game-id="${this.escapeHtml(game.id)}" data-server-name="${this.escapeHtml(server.name)}">
                             <i class="fas fa-bell"></i>
                         </button>
                     </div>
                 </div>
-                <div class="game-reset-countdown" data-countdown-key="${key}">
+                <div class="game-reset-countdown" data-countdown-key="${this.escapeHtml(key)}">
                     <i class="fas fa-clock"></i>
                     <span>Resets in ${this.getCountdownToReset(server)}</span>
                 </div>
@@ -612,9 +611,9 @@ const DailiesApp = {
                     <div class="game-progress-text">${completed}/${total} complete</div>
                 </div>
             </div>
-            <div class="game-checklist-items" data-items-key="${key}">
+            <div class="game-checklist-items" data-items-key="${this.escapeHtml(key)}">
                 ${checklist.items.map(item => this.createChecklistItemHTML(game.id, server.name, item)).join('')}
-                <button class="add-item-btn" data-game-id="${game.id}" data-server-name="${server.name}">
+                <button class="add-item-btn" data-game-id="${this.escapeHtml(game.id)}" data-server-name="${this.escapeHtml(server.name)}">
                     <i class="fas fa-plus"></i>
                     Add Task
                 </button>
@@ -629,13 +628,13 @@ const DailiesApp = {
 
     createChecklistItemHTML(gameId, serverName, item) {
         return `
-            <div class="checklist-item ${item.checked ? 'checked' : ''}" data-item-id="${item.id}">
+            <div class="checklist-item ${item.checked ? 'checked' : ''}" data-item-id="${this.escapeHtml(item.id)}">
                 <div class="checklist-checkbox ${item.checked ? 'checked' : ''}"
-                     data-game-id="${gameId}" data-server-name="${serverName}" data-item-id="${item.id}">
+                     data-game-id="${this.escapeHtml(gameId)}" data-server-name="${this.escapeHtml(serverName)}" data-item-id="${this.escapeHtml(item.id)}">
                 </div>
                 <span class="checklist-item-label">${this.escapeHtml(item.label)}</span>
                 <button class="checklist-item-delete" 
-                        data-game-id="${gameId}" data-server-name="${serverName}" data-item-id="${item.id}"
+                        data-game-id="${this.escapeHtml(gameId)}" data-server-name="${this.escapeHtml(serverName)}" data-item-id="${this.escapeHtml(item.id)}"
                         title="Delete task">
                     <i class="fas fa-trash-alt"></i>
                 </button>
@@ -837,12 +836,19 @@ const DailiesApp = {
 
             const tag = document.createElement('span');
             tag.className = 'hidden-server-tag';
-            tag.innerHTML = `
-                <span>${gameName} - ${serverName}</span>
-                <i class="fas fa-times"></i>
-            `;
             tag.title = 'Click to unhide';
             tag.onclick = () => this.unhideServer(key);
+
+            // Create text span safely using textContent (prevents XSS)
+            const textSpan = document.createElement('span');
+            textSpan.textContent = `${gameName} - ${serverName}`;
+            tag.appendChild(textSpan);
+
+            // Create icon element separately (safe static HTML)
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-times';
+            tag.appendChild(icon);
+
             container.appendChild(tag);
         });
     },
@@ -882,11 +888,32 @@ const DailiesApp = {
             try {
                 const config = JSON.parse(event.target.result);
 
-                if (config.favorites) localStorage.setItem('sora_favorites', JSON.stringify(config.favorites));
-                if (config.settings) localStorage.setItem('sora_settings', JSON.stringify(config.settings));
-                if (config.hiddenServers) localStorage.setItem('sora_hidden_servers', JSON.stringify(config.hiddenServers));
-                if (config.checklists) localStorage.setItem('sora_dailies_checklists', JSON.stringify(config.checklists));
-                if (config.notifications) localStorage.setItem('sora_dailies_notifications', JSON.stringify(config.notifications));
+                // Validate and sanitize config before persisting
+                const validationResult = this.validateConfig(config);
+                if (!validationResult.valid) {
+                    console.error('Config validation failed:', validationResult.errors);
+                    this.showToast('Invalid config file: ' + validationResult.errors[0], 'error');
+                    return;
+                }
+
+                const sanitized = validationResult.sanitized;
+
+                // Only persist validated and sanitized data
+                if (sanitized.favorites) {
+                    localStorage.setItem('sora_favorites', JSON.stringify(sanitized.favorites));
+                }
+                if (sanitized.settings) {
+                    localStorage.setItem('sora_settings', JSON.stringify(sanitized.settings));
+                }
+                if (sanitized.hiddenServers) {
+                    localStorage.setItem('sora_hidden_servers', JSON.stringify(sanitized.hiddenServers));
+                }
+                if (sanitized.checklists) {
+                    localStorage.setItem('sora_dailies_checklists', JSON.stringify(sanitized.checklists));
+                }
+                if (sanitized.notifications) {
+                    localStorage.setItem('sora_dailies_notifications', JSON.stringify(sanitized.notifications));
+                }
 
                 this.showToast('Config imported successfully! Reloading...', 'success');
                 setTimeout(() => location.reload(), 1500);
@@ -896,6 +923,166 @@ const DailiesApp = {
             }
         };
         reader.readAsText(file);
+    },
+
+    // Validate and sanitize imported config
+    validateConfig(config) {
+        const errors = [];
+        const sanitized = {};
+
+        // Must be an object
+        if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+            return { valid: false, errors: ['Config must be an object'] };
+        }
+
+        // Reject prototype pollution keys
+        const dangerousKeys = ['__proto__', 'constructor', 'prototype'];
+        const checkForDangerousKeys = (obj, path = '') => {
+            if (typeof obj !== 'object' || obj === null) return true;
+            for (const key of Object.keys(obj)) {
+                if (dangerousKeys.includes(key)) {
+                    errors.push(`Dangerous key "${key}" found at ${path || 'root'}`);
+                    return false;
+                }
+                if (typeof obj[key] === 'object' && obj[key] !== null) {
+                    if (!checkForDangerousKeys(obj[key], path ? `${path}.${key}` : key)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+
+        if (!checkForDangerousKeys(config)) {
+            return { valid: false, errors };
+        }
+
+        // Whitelist of allowed top-level keys
+        const allowedKeys = ['favorites', 'settings', 'hiddenServers', 'checklists', 'notifications', 'exportedAt', 'version'];
+
+        // Size limits
+        const MAX_FAVORITES = 100;
+        const MAX_HIDDEN_SERVERS = 100;
+        const MAX_CHECKLISTS = 100;
+        const MAX_CHECKLIST_ITEMS = 50;
+        const MAX_STRING_LENGTH = 500;
+
+        // Validate favorites: array of strings
+        if (config.favorites !== undefined) {
+            if (!Array.isArray(config.favorites)) {
+                errors.push('favorites must be an array');
+            } else if (config.favorites.length > MAX_FAVORITES) {
+                errors.push(`favorites exceeds max length of ${MAX_FAVORITES}`);
+            } else {
+                const validFavorites = config.favorites.filter(f =>
+                    typeof f === 'string' && f.length <= MAX_STRING_LENGTH
+                );
+                sanitized.favorites = validFavorites;
+            }
+        }
+
+        // Validate settings: object with known primitive fields
+        if (config.settings !== undefined) {
+            if (typeof config.settings !== 'object' || config.settings === null || Array.isArray(config.settings)) {
+                errors.push('settings must be an object');
+            } else {
+                const allowedSettings = {
+                    use24HourFormat: 'boolean',
+                    compactMode: 'boolean',
+                    showSeconds: 'boolean'
+                };
+                const validSettings = {};
+                for (const [key, expectedType] of Object.entries(allowedSettings)) {
+                    if (config.settings[key] !== undefined) {
+                        if (typeof config.settings[key] === expectedType) {
+                            validSettings[key] = config.settings[key];
+                        }
+                    }
+                }
+                sanitized.settings = validSettings;
+            }
+        }
+
+        // Validate hiddenServers: array of strings in "gameId:serverName" format
+        if (config.hiddenServers !== undefined) {
+            if (!Array.isArray(config.hiddenServers)) {
+                errors.push('hiddenServers must be an array');
+            } else if (config.hiddenServers.length > MAX_HIDDEN_SERVERS) {
+                errors.push(`hiddenServers exceeds max length of ${MAX_HIDDEN_SERVERS}`);
+            } else {
+                const validHidden = config.hiddenServers.filter(h =>
+                    typeof h === 'string' &&
+                    h.includes(':') &&
+                    h.length <= MAX_STRING_LENGTH
+                );
+                sanitized.hiddenServers = validHidden;
+            }
+        }
+
+        // Validate checklists: object with string keys and checklist values
+        if (config.checklists !== undefined) {
+            if (typeof config.checklists !== 'object' || config.checklists === null || Array.isArray(config.checklists)) {
+                errors.push('checklists must be an object');
+            } else {
+                const validChecklists = {};
+                const keys = Object.keys(config.checklists).slice(0, MAX_CHECKLISTS);
+                for (const key of keys) {
+                    if (typeof key !== 'string' || !key.includes(':') || key.length > MAX_STRING_LENGTH) continue;
+                    const checklist = config.checklists[key];
+                    if (typeof checklist !== 'object' || checklist === null) continue;
+
+                    const validChecklist = {
+                        items: [],
+                        lastResetCheck: typeof checklist.lastResetCheck === 'number' ? checklist.lastResetCheck : Date.now()
+                    };
+
+                    if (Array.isArray(checklist.items)) {
+                        const validItems = checklist.items.slice(0, MAX_CHECKLIST_ITEMS).filter(item => {
+                            return item &&
+                                typeof item === 'object' &&
+                                typeof item.id === 'string' && item.id.length <= 50 &&
+                                typeof item.label === 'string' && item.label.length <= MAX_STRING_LENGTH &&
+                                typeof item.checked === 'boolean';
+                        }).map(item => ({
+                            id: item.id,
+                            label: item.label,
+                            checked: item.checked,
+                            createdAt: typeof item.createdAt === 'number' ? item.createdAt : Date.now()
+                        }));
+                        validChecklist.items = validItems;
+                    }
+
+                    validChecklists[key] = validChecklist;
+                }
+                sanitized.checklists = validChecklists;
+            }
+        }
+
+        // Validate notifications: object with string keys and notification settings
+        if (config.notifications !== undefined) {
+            if (typeof config.notifications !== 'object' || config.notifications === null || Array.isArray(config.notifications)) {
+                errors.push('notifications must be an object');
+            } else {
+                const validNotifications = {};
+                const keys = Object.keys(config.notifications).slice(0, MAX_CHECKLISTS);
+                for (const key of keys) {
+                    if (typeof key !== 'string' || !key.includes(':') || key.length > MAX_STRING_LENGTH) continue;
+                    const notif = config.notifications[key];
+                    if (typeof notif !== 'object' || notif === null) continue;
+
+                    if (typeof notif.beforeReset === 'number' && notif.beforeReset > 0 && notif.beforeReset <= 1440) {
+                        validNotifications[key] = { beforeReset: notif.beforeReset };
+                    }
+                }
+                sanitized.notifications = validNotifications;
+            }
+        }
+
+        return {
+            valid: errors.length === 0,
+            errors,
+            sanitized
+        };
     },
 
     // ===================================
@@ -1144,9 +1331,15 @@ const DailiesApp = {
     },
 
     escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        if (text == null) return '';
+        const str = String(text);
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;')
+            .replace(/\//g, '&#x2F;');
     },
 
     showToast(message, type = 'info') {
