@@ -1,7 +1,7 @@
 // Sora Service Worker v1.0.0
 // Handles caching for offline support and performance optimization
 
-const CACHE_NAME = 'sora-cache-v1';
+const CACHE_NAME = 'sora-cache-v2';
 const STATIC_ASSETS = [
     '/',
     '/dashboard',
@@ -64,7 +64,13 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Skip external requests
+    // Handle Font Awesome CDN resources with cache-first strategy
+    if (url.origin === 'https://cdnjs.cloudflare.com' && url.pathname.includes('font-awesome')) {
+        event.respondWith(cacheFirstCDN(request));
+        return;
+    }
+
+    // Skip other external requests
     if (url.origin !== self.location.origin) {
         return;
     }
@@ -136,6 +142,41 @@ async function fetchAndCache(request) {
     }
 
     return networkResponse;
+}
+
+// Cache-first strategy for CDN resources (Font Awesome, etc.)
+async function cacheFirstCDN(request) {
+    try {
+        const cachedResponse = await caches.match(request);
+
+        if (cachedResponse) {
+            // Return cached response immediately, fetch fresh in background
+            fetch(request, { mode: 'cors' })
+                .then(response => {
+                    if (response.ok) {
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(request, response);
+                        });
+                    }
+                })
+                .catch(() => { });
+            return cachedResponse;
+        }
+
+        // Not in cache, fetch from network with CORS mode
+        const networkResponse = await fetch(request, { mode: 'cors' });
+
+        if (networkResponse.ok) {
+            const cache = await caches.open(CACHE_NAME);
+            cache.put(request, networkResponse.clone());
+        }
+
+        return networkResponse;
+    } catch (error) {
+        console.error('[SW] CDN cache-first failed:', error);
+        // Return nothing if CDN fails and not cached
+        return new Response('', { status: 503 });
+    }
 }
 
 // Create offline fallback response
