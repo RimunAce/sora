@@ -1107,16 +1107,31 @@ const DailiesApp = {
 
     checkExpiredTimers() {
         const now = Date.now();
-        const expired = this.activeTimers.filter(t => t.endsAt <= now);
 
-        if (expired.length > 0) {
-            expired.forEach(timer => {
-                this.sendNotification('Timer Complete', `${timer.label} - Your timer has ended!`);
+        // Safety net: Only process expired timers that DON'T have a pending timeout
+        // (i.e., legacy timers or timers where setTimeout didn't get scheduled)
+        // Timers with a timeoutHandle will be handled by scheduleTimerNotification
+        const expiredWithoutTimeout = this.activeTimers.filter(t =>
+            t.endsAt <= now && !t.timeoutHandle
+        );
+
+        if (expiredWithoutTimeout.length > 0) {
+            expiredWithoutTimeout.forEach(timer => {
+                // Use the same notification logic as scheduleTimerNotification
+                if (timer.isResetNotification) {
+                    const game = this.getGameById(timer.gameId);
+                    const minutesBefore = this.notifications[`${timer.gameId}:${timer.serverName}`]?.beforeReset || 0;
+                    this.sendNotification(
+                        `${game?.name || 'Game'} - ${timer.serverName}`,
+                        `Reset in ${minutesBefore} minutes! Complete your dailies!`
+                    );
+                } else {
+                    this.sendNotification('Timer Complete', `${timer.label} - Your timer has ended!`);
+                }
+
+                // Remove this timer (it was handled by the safety net)
+                this.removeTimer(timer.id);
             });
-
-            this.activeTimers = this.activeTimers.filter(t => t.endsAt > now);
-            this.saveTimers();
-            this.renderActiveTimers();
         }
     },
 
