@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sora</title>
+    <meta name="description" content="Your personal gacha game dashboard - manage reminders and checklists.">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sora">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Dashboard | Sora">
+    <meta property="og:description" content="Your personal gacha game command center.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sora-time.xyz/dashboard">
+    <meta property="og:image" content="https://sora-time.xyz/assets/images/banner.png">
+
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="/assets/dailies.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="/" class="logo-link">
+                    <img src="/assets/images/banner.png" alt="Sora" class="logo-banner">
+                </a>
+                <nav class="nav">
+                    <a href="/" class="nav-link">Games</a>
+                    <a href="/dashboard" class="nav-link active">Dashboard</a>
+                    <a href="/#about-section" class="nav-link">About</a>
+                    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main dailies-main">
+            <!-- Hero Section -->
+            <section class="dailies-hero">
+                <div class="dailies-hero-content">
+                    <h1 class="dailies-title">
+                        <i class="fas fa-th-large"></i>
+                        Dashboard
+                    </h1>
+
+                </div>
+            </section>
+
+            <!-- Dashboard Tab Navigation -->
+            <div class="dashboard-tabs">
+                <button class="dashboard-tab active" data-tab="reminder">
+                    <i class="fas fa-bell"></i>
+                    <span>Reminder</span>
+                </button>
+                <button class="dashboard-tab" data-tab="checklists">
+                    <i class="fas fa-check-square"></i>
+                    <span>Checklists</span>
+                </button>
+            </div>
+
+            <!-- REMINDER TAB CONTENT -->
+            <div id="reminder-tab" class="tab-content active">
+                <!-- Notification Permission Banner -->
+                <div id="notification-banner" class="notification-banner hidden">
+                    <div class="notification-banner-content">
+                        <i class="fas fa-bell"></i>
+                        <span>Enable notifications to get reminded before server resets</span>
+                    </div>
+                    <div class="notification-banner-actions">
+                        <button id="enable-notifications-btn" class="enable-notifications-btn">Enable
+                            Notifications</button>
+                        <button id="dismiss-notification-banner" class="dismiss-banner-btn" aria-label="Dismiss">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Custom Timer Section -->
+                <section class="quick-timer-section">
+                    <div class="quick-timer-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-stopwatch"></i>
+                            Custom Timer
+                        </h2>
+                    </div>
+                    <div class="quick-timer-form">
+                        <div class="timer-input-group">
+                            <label for="timer-label">Label</label>
+                            <input type="text" id="timer-label" placeholder="e.g., Resin Full" maxlength="50">
+                        </div>
+                        <div class="timer-input-row">
+                            <div class="timer-input-group">
+                                <label for="timer-hours">Hours</label>
+                                <input type="number" id="timer-hours" min="0" max="23" value="0">
+                            </div>
+                            <div class="timer-input-group">
+                                <label for="timer-minutes">Minutes</label>
+                                <input type="number" id="timer-minutes" min="0" max="59" value="30">
+                            </div>
+                        </div>
+                        <button id="set-timer-btn" class="set-timer-btn">
+                            <i class="fas fa-bell"></i>
+                            Set Timer & Notify
+                        </button>
+                    </div>
+                    <!-- Active Timers -->
+                    <div class="active-timers" id="active-timers">
+                        <h3 class="active-timers-title">Active Timers</h3>
+                        <div class="active-timers-list" id="active-timers-list">
+                            <p class="no-timers-message">No active timers</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reset Reminders Section -->
+                <section class="reset-reminders-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Reset Reminders
+                    </h2>
+                    <p class="section-subtitle">Notifications scheduled for your favorite games' server resets</p>
+                    <div id="scheduled-reminders-list" class="scheduled-reminders-list">
+                        <p class="no-reminders-message">No reset reminders set. Add games to favorites and set reminders
+                            from the Checklists tab.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CHECKLISTS TAB CONTENT -->
+            <div id="checklists-tab" class="tab-content">
+                <!-- Overall Progress Section -->
+                <section class="overall-progress-section" id="overall-progress-section">
+                    <div class="overall-progress-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-chart-pie"></i>
+                            Today's Progress
+                        </h2>
+                        <div class="overall-stats">
+                            <span id="overall-completed">0</span>
+                            <span class="stats-divider">/</span>
+                            <span id="overall-total">0</span>
+                            <span class="stats-label">Tasks</span>
+                        </div>
+                    </div>
+                    <div class="overall-progress-bar-container">
+                        <div class="overall-progress-bar" id="overall-progress-bar">
+                            <div class="overall-progress-fill" id="overall-progress-fill"></div>
+                        </div>
+                        <span class="overall-progress-percent" id="overall-progress-percent">0%</span>
+                    </div>
+                </section>
+
+                <!-- Game Checklists Section -->
+                <section class="game-checklists-section" id="game-checklists-section">
+                    <div class="game-checklists-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-gamepad"></i>
+                            Game Checklists
+                        </h2>
+                        <p class="section-subtitle">Add games from <a href="/">the homepage</a> to your favorites to
+                            track them here</p>
+                    </div>
+                    <div class="game-checklists-container" id="game-checklists-container">
+                        <div class="no-favorites-message" id="no-favorites-message">
+                            <i class="fas fa-star"></i>
+                            <p>No favorite games yet!</p>
+                            <a href="/" class="add-favorites-link">Go add some games to favorites →</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Add Checklist Item Modal -->
+        <div id="add-item-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content add-item-modal-content">
+                <div class="modal-header">
+                    <h3>Add Checklist Item</h3>
+                    <button id="close-add-item-modal" class="close-modal-btn">&times;</button>
+                </div>
+                <form id="add-item-form" class="add-item-form">
+                    <input type="hidden" id="add-item-game-id">
+                    <input type="hidden" id="add-item-server-name">
+                    <div class="form-group">
+                        <label for="add-item-label">Task Name</label>
+                        <input type="text" id="add-item-label" placeholder="e.g., Daily Commissions" required
+                            maxlength="100">
+                    </div>
+                    <button type="submit" class="submit-add-item-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Task
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Settings Modal -->
+        <div id="notification-settings-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content notification-settings-content">
+                <div class="modal-header">
+                    <h3>Reset Notification</h3>
+                    <button id="close-notification-settings" class="close-modal-btn">&times;</button>
+                </div>
+                <div class="notification-settings-body">
+                    <input type="hidden" id="notify-game-id">
+                    <input type="hidden" id="notify-server-name">
+                    <p class="notification-info">Get notified before the server resets</p>
+                    <div class="notification-options">
+                        <button class="notify-option-btn" data-minutes="5">5 min before</button>
+                        <button class="notify-option-btn" data-minutes="15">15 min before</button>
+                        <button class="notify-option-btn" data-minutes="30">30 min before</button>
+                        <button class="notify-option-btn" data-minutes="60">1 hour before</button>
+                    </div>
+                    <div class="custom-notify-group">
+                        <label for="custom-notify-minutes">Or set custom (minutes):</label>
+                        <div class="custom-notify-row">
+                            <input type="number" id="custom-notify-minutes" min="1" max="1440" value="15">
+                            <button id="set-custom-notify-btn" class="set-custom-notify-btn">Set</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="settings-modal hidden">
+            <div class="settings-modal-backdrop"></div>
+            <div class="settings-modal-content">
+                <div class="settings-modal-header">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <button id="close-settings-modal" class="close-modal-btn"
+                        aria-label="Close settings">&times;</button>
+                </div>
+                <div class="settings-modal-body">
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-database"></i>
+                            Data Management
+                        </h4>
+                        <p class="settings-section-desc">Export or import your configuration.</p>
+                        <div class="settings-data-actions">
+                            <button id="export-config-btn" class="settings-action-btn export-btn">
+                                <i class="fas fa-download"></i>
+                                <span>Export Config</span>
+                            </button>
+                            <div class="import-wrapper">
+                                <input type="file" id="import-config-input" accept=".json" class="import-file-input">
+                                <label for="import-config-input" class="settings-action-btn import-btn">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Import Config</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="import-status" class="import-status hidden"></div>
+                    </section>
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-sliders-h"></i>
+                            Display Preferences
+                        </h4>
+                        <div class="settings-option">
+                            <div class="settings-option-info">
+                                <span class="settings-option-label">24-Hour Time Format</span>
+                                <span class="settings-option-desc">Display times as 14:00 instead of 2:00 PM</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-24h" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </section>
+                    <section class="settings-section">
+                        <h4 class="settings-section-title">
+                            <i class="fas fa-eye-slash"></i>
+                            Hidden Servers
+                        </h4>
+                        <p class="settings-section-desc">Servers you've hidden. Click to restore.</p>
+                        <div id="hidden-servers-list" class="hidden-servers-list">
+                            <p class="no-hidden-servers">No hidden servers</p>
+                        </div>
+                    </section>
+                    <section class="settings-section settings-about">
+                        <p class="settings-version">Version 1.3.0</p>
+                        <div class="settings-links">
+                            <a href="https://github.com/RimunAce/sora" target="_blank" rel="noopener noreferrer"
+                                class="settings-link">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications Container -->
+        <div id="toast-container" class="toast-container"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 Sora. Made with ❤️ for gacha gamers</p>
+                <div class="footer-links">
+                    <a href="https://github.com/RimunAce/sora" class="footer-link" target="_blank"
+                        rel="noopener noreferrer">GitHub</a>
+                    <a href="/" class="footer-link">Home</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/assets/dailies.js"></script>
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('[App] Service worker registered'))
+                .catch(err => console.error('[App] Service worker registration failed:', err));
+        }
+    </script>
+</body>
+
+</html>

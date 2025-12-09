@@ -3808,7 +3808,47 @@ body.compact-mode .game-banner {
     line-height: 1.2;
 }
 
-/* Favorite star on compact icon */
+/* Favorite button on compact icon */
+.compact-favorite-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 5;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    padding: 0;
+}
+
+.compact-favorite-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: scale(1.15);
+}
+
+.compact-favorite-btn.favorited {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.compact-favorite-btn.favorited:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+/* Legacy: keep old class for backwards compatibility */
 .compact-favorite-star {
     position: absolute;
     top: 0;

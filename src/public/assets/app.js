@@ -37,6 +37,36 @@ const App = {
         this.initLazyLoading();
         this.initPerformanceMonitoring();
         this.applySettings(); // Apply loaded settings to UI
+
+        // Check URL params for actions
+        this.checkUrlParams();
+
+        // Check hash for section navigation
+        this.checkHash();
+    },
+
+    checkHash() {
+        if (window.location.hash === '#about-section') {
+            const aboutLink = document.querySelector('.nav-link[data-section="about"]');
+            if (aboutLink) {
+                this.handleNavigation(aboutLink);
+                // Ensure we scroll to it after rendering
+                setTimeout(() => {
+                    const section = document.getElementById('about-section');
+                    if (section) section.scrollIntoView();
+                }, 150);
+            }
+        }
+    },
+
+    checkUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('openSettings') === 'true') {
+            // Remove param from URL without reload
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+            this.openSettingsModal();
+        }
     },
 
     // Load favorites from localStorage
@@ -403,8 +433,14 @@ const App = {
 
     // Setup event listeners
     setupEventListeners() {
-        // Navigation
+        // Navigation - only intercept section links (href="#"), allow real page navigation
         document.querySelectorAll('.nav-link').forEach(link => {
+            // Skip links that navigate to actual pages (not section anchors)
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#') && href !== '#') {
+                return; // Let the browser handle real page navigation
+            }
+
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.handleNavigation(link);
@@ -720,14 +756,24 @@ const App = {
         name.className = 'compact-game-name';
         name.textContent = game.name;
 
-        // Add favorite star indicator
+        // Add interactive favorite toggle button
+        const starBtn = document.createElement('button');
+        starBtn.className = 'compact-favorite-btn';
+        starBtn.setAttribute('aria-label', this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites');
+        starBtn.title = this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites';
+
         if (this.isFavorite(game.id)) {
-            const star = document.createElement('span');
-            star.className = 'compact-favorite-star';
-            star.innerHTML = '<i class="fas fa-star"></i>';
-            icon.appendChild(star);
+            starBtn.classList.add('favorited');
         }
 
+        starBtn.innerHTML = '<i class="fas fa-star"></i>';
+
+        starBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent opening the modal
+            this.toggleFavorite(game.id);
+        });
+
+        icon.appendChild(starBtn);
         icon.appendChild(img);
         icon.appendChild(name);
 
@@ -1097,11 +1143,44 @@ const App = {
         leftGroup.appendChild(serverNameEl);
         leftGroup.appendChild(timezoneEl);
 
+        // Right group for actions
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'favorite-detail-server-right';
+        rightGroup.style.display = 'flex';
+        rightGroup.style.alignItems = 'center';
+        rightGroup.style.gap = '12px';
+
+        // Hide Server Button
+        const hideBtn = document.createElement('button');
+        hideBtn.className = 'favorite-detail-hide-btn';
+        hideBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        hideBtn.title = 'Hide this server completely';
+        hideBtn.style.background = 'none';
+        hideBtn.style.border = 'none';
+        hideBtn.style.color = 'var(--text-muted)';
+        hideBtn.style.cursor = 'pointer';
+        hideBtn.style.padding = '4px';
+        hideBtn.style.transition = 'color 0.2s';
+
+        hideBtn.onmouseover = () => hideBtn.style.color = 'var(--error)';
+        hideBtn.onmouseout = () => hideBtn.style.color = 'var(--text-muted)';
+
+        hideBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (confirm(`Hide ${server.name} server? You can unhide it in Settings.`)) {
+                this.toggleServerVisibility(game.id, server.name);
+                card.remove(); // Remove immediately from modal
+            }
+        };
+
         const toggleIcon = document.createElement('i');
         toggleIcon.className = 'fas fa-chevron-up favorite-detail-toggle-icon';
 
+        rightGroup.appendChild(hideBtn);
+        rightGroup.appendChild(toggleIcon);
+
         header.appendChild(leftGroup);
-        header.appendChild(toggleIcon);
+        header.appendChild(rightGroup);
 
         // Body (wraps all info rows)
         const body = document.createElement('div');
