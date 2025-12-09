@@ -7,8 +7,11 @@ import { loadGamesData, getGameById } from '../../core/data/gamesLoader'
 // Static file paths
 const PUBLIC_DIR = join(process.cwd(), 'src', 'public')
 const HTML_FILE = join(PUBLIC_DIR, 'index.html')
+const DASHBOARD_HTML_FILE = join(PUBLIC_DIR, 'dashboard.html')
 const CSS_FILE = join(PUBLIC_DIR, 'assets', 'styles.css')
 const JS_FILE = join(PUBLIC_DIR, 'assets', 'app.js')
+const MANIFEST_FILE = join(PUBLIC_DIR, 'manifest.json')
+const SW_FILE = join(PUBLIC_DIR, 'sw.js')
 
 // MIME type mapping for static files
 const MIME_TYPES: Record<string, string> = {
@@ -35,6 +38,45 @@ export const registerRoutes = (app: App): void => {
     } catch (error) {
       logger.error('Failed to serve landing page', { error })
       res.status(500).send('<h1>Internal Server Error</h1>')
+    }
+  })
+
+  // Serve Dashboard page
+  app.get('/dashboard', (req, res) => {
+    try {
+      const htmlContent = readFileSync(DASHBOARD_HTML_FILE, 'utf-8')
+      logger.info('Dashboard page served')
+      res.type('html').send(htmlContent)
+    } catch (error) {
+      logger.error('Failed to serve dashboard page', { error })
+      res.status(500).send('<h1>Internal Server Error</h1>')
+    }
+  })
+
+  // Serve PWA manifest
+  app.get('/manifest.json', (req, res) => {
+    try {
+      const manifestContent = readFileSync(MANIFEST_FILE, 'utf-8')
+      logger.debug('Manifest served')
+      res.set('Content-Type', 'application/manifest+json')
+      res.send(manifestContent)
+    } catch (error) {
+      logger.error('Failed to serve manifest', { error })
+      res.status(404).json({ error: 'Manifest not found' })
+    }
+  })
+
+  // Serve Service Worker
+  app.get('/sw.js', (req, res) => {
+    try {
+      const swContent = readFileSync(SW_FILE, 'utf-8')
+      logger.debug('Service worker served')
+      res.set('Content-Type', 'application/javascript; charset=utf-8')
+      res.set('Service-Worker-Allowed', '/')
+      res.send(swContent)
+    } catch (error) {
+      logger.error('Failed to serve service worker', { error })
+      res.status(404).send('// Service worker not found')
     }
   })
 
@@ -69,7 +111,7 @@ export const registerRoutes = (app: App): void => {
     try {
       const requestPath = (req as any).path
       const filePath = join(PUBLIC_DIR, requestPath)
-      
+
       // Security check: ensure the file is within PUBLIC_DIR
       if (!filePath.startsWith(PUBLIC_DIR)) {
         logger.warn('Attempted path traversal', { requestPath })
@@ -106,7 +148,7 @@ export const registerRoutes = (app: App): void => {
   // Keep the old simple root endpoint for fallback
   app.get('/simple', (req, res) => {
     logger.info('Simple root endpoint accessed')
-    res.send('<h1>Hello World from Sora v1.0.0</h1>')
+    res.send('<h1>Hello World from Sora v1.4.0</h1>')
   })
 
   app.get('/page/:page', (req, res) => {
@@ -148,7 +190,7 @@ export const registerRoutes = (app: App): void => {
     try {
       const gameId = (req as any).params?.id
       const game = getGameById(gameId)
-      
+
       if (game) {
         logger.info(`Game details requested: ${gameId}`)
         res.json(game)
@@ -173,7 +215,7 @@ export const registerRoutes = (app: App): void => {
     logger.infoContext('API status requested', { userAgent })
     res.json({
       service: 'Sora',
-      version: '1.0.0',
+      version: '1.4.0',
       status: 'operational',
       timestamp: new Date().toISOString()
     })

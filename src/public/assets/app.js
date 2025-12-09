@@ -7,18 +7,27 @@ const App = {
     selectedTimezone: null, // null means auto-detect
     timezones: [],
     favoriteGames: [], // Store favorite game IDs
-    
+    hiddenServers: [], // Store hidden server keys (format: "gameId:serverName")
+    settings: {
+        use24HourFormat: true,
+        compactMode: false,
+        showSeconds: true
+    },
+
     // Performance optimization properties
     searchTimeoutId: null,
     isLoading: false,
     renderQueue: Promise.resolve(),
     preloadedImages: new Map(),
     imageObserver: null,
-    
+
     // Initialize the application
     init() {
         this.loadFavorites(); // Load favorites from localStorage
+        this.loadSettings(); // Load settings from localStorage
+        this.loadHiddenServers(); // Load hidden servers from localStorage
         this.setupEventListeners();
+        this.setupSettingsListeners(); // Setup settings modal listeners
         this.loadGames();
         this.startCountdownTimers();
         this.initHeroClock();
@@ -27,8 +36,39 @@ const App = {
         this.loadSavedTimezone();
         this.initLazyLoading();
         this.initPerformanceMonitoring();
+        this.applySettings(); // Apply loaded settings to UI
+
+        // Check URL params for actions
+        this.checkUrlParams();
+
+        // Check hash for section navigation
+        this.checkHash();
     },
-    
+
+    checkHash() {
+        if (window.location.hash === '#about-section') {
+            const aboutLink = document.querySelector('.nav-link[data-section="about"]');
+            if (aboutLink) {
+                this.handleNavigation(aboutLink);
+                // Ensure we scroll to it after rendering
+                setTimeout(() => {
+                    const section = document.getElementById('about-section');
+                    if (section) section.scrollIntoView();
+                }, 150);
+            }
+        }
+    },
+
+    checkUrlParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('openSettings') === 'true') {
+            // Remove param from URL without reload
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+            this.openSettingsModal();
+        }
+    },
+
     // Load favorites from localStorage
     loadFavorites() {
         try {
@@ -39,7 +79,7 @@ const App = {
             this.favoriteGames = [];
         }
     },
-    
+
     // Save favorites to localStorage
     saveFavorites() {
         try {
@@ -48,7 +88,7 @@ const App = {
             console.error('Error saving favorites:', error);
         }
     },
-    
+
     // Toggle favorite status
     toggleFavorite(gameId) {
         const index = this.favoriteGames.indexOf(gameId);
@@ -61,16 +101,349 @@ const App = {
         this.renderGames(); // Re-render to update UI
         this.renderFavorites(); // Update favorites section
     },
-    
+
     // Check if a game is favorited
     isFavorite(gameId) {
         return this.favoriteGames.includes(gameId);
     },
-    
+
+    // ===================================
+    // SETTINGS MANAGEMENT
+    // ===================================
+
+    // Load settings from localStorage
+    loadSettings() {
+        try {
+            const saved = localStorage.getItem('sora_settings');
+            if (saved) {
+                this.settings = { ...this.settings, ...JSON.parse(saved) };
+            }
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    },
+
+    // Save settings to localStorage
+    saveSettings() {
+        try {
+            localStorage.setItem('sora_settings', JSON.stringify(this.settings));
+        } catch (error) {
+            console.error('Error saving settings:', error);
+        }
+    },
+
+    // Load hidden servers from localStorage
+    loadHiddenServers() {
+        try {
+            const saved = localStorage.getItem('sora_hidden_servers');
+            this.hiddenServers = saved ? JSON.parse(saved) : [];
+        } catch (error) {
+            console.error('Error loading hidden servers:', error);
+            this.hiddenServers = [];
+        }
+    },
+
+    // Save hidden servers to localStorage
+    saveHiddenServers() {
+        try {
+            localStorage.setItem('sora_hidden_servers', JSON.stringify(this.hiddenServers));
+        } catch (error) {
+            console.error('Error saving hidden servers:', error);
+        }
+    },
+
+    // Apply settings to UI
+    applySettings() {
+        // Apply compact mode
+        document.body.classList.toggle('compact-mode', this.settings.compactMode);
+
+        // Sync toggles with current settings
+        const toggle24h = document.getElementById('toggle-24h');
+        const toggleCompact = document.getElementById('toggle-compact');
+        const toggleSeconds = document.getElementById('toggle-seconds');
+
+        if (toggle24h) toggle24h.checked = this.settings.use24HourFormat;
+        if (toggleCompact) toggleCompact.checked = this.settings.compactMode;
+        if (toggleSeconds) toggleSeconds.checked = this.settings.showSeconds;
+
+        // Update hidden servers list in modal
+        this.renderHiddenServersList();
+    },
+
+    // Setup settings modal event listeners
+    setupSettingsListeners() {
+        // Settings button
+        const settingsBtn = document.getElementById('settings-btn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => this.openSettingsModal());
+        }
+
+        // Close settings modal
+        const closeBtn = document.getElementById('close-settings-modal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.closeSettingsModal());
+        }
+
+        // Close on backdrop click
+        const settingsModal = document.getElementById('settings-modal');
+        if (settingsModal) {
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target.classList.contains('settings-modal-backdrop')) {
+                    this.closeSettingsModal();
+                }
+            });
+        }
+
+        // Export config button
+        const exportBtn = document.getElementById('export-config-btn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => this.exportConfig());
+        }
+
+        // Import config input
+        const importInput = document.getElementById('import-config-input');
+        if (importInput) {
+            importInput.addEventListener('change', (e) => this.handleImportConfig(e));
+        }
+
+        // Settings toggles
+        const toggle24h = document.getElementById('toggle-24h');
+        if (toggle24h) {
+            toggle24h.addEventListener('change', (e) => {
+                this.settings.use24HourFormat = e.target.checked;
+                this.saveSettings();
+                this.updateAllCountdowns();
+                this.renderGames(); // Re-render to update times on cards
+            });
+        }
+
+        const toggleCompact = document.getElementById('toggle-compact');
+        if (toggleCompact) {
+            toggleCompact.addEventListener('change', (e) => {
+                this.settings.compactMode = e.target.checked;
+                this.saveSettings();
+                document.body.classList.toggle('compact-mode', e.target.checked);
+                this.renderGames(); // Re-render to switch between banner and icon views
+            });
+        }
+
+        const toggleSeconds = document.getElementById('toggle-seconds');
+        if (toggleSeconds) {
+            toggleSeconds.addEventListener('change', (e) => {
+                this.settings.showSeconds = e.target.checked;
+                this.saveSettings();
+                this.updateAllCountdowns();
+            });
+        }
+    },
+
+    // Open settings modal
+    openSettingsModal() {
+        const modal = document.getElementById('settings-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            this.applySettings(); // Ensure toggles are synced
+        }
+    },
+
+    // Close settings modal
+    closeSettingsModal() {
+        const modal = document.getElementById('settings-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    },
+
+    // Export configuration to JSON file
+    exportConfig() {
+        try {
+            const config = {
+                version: '1.0',
+                exportedAt: new Date().toISOString(),
+                favorites: this.favoriteGames,
+                hiddenServers: this.hiddenServers,
+                settings: this.settings,
+                timezone: this.selectedTimezone,
+                favoriteServerVisibility: this.favoriteServerVisibility || {}
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sora-config-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            this.showNotification('Configuration exported successfully!', 'success');
+        } catch (error) {
+            console.error('Error exporting config:', error);
+            this.showNotification('Failed to export configuration', 'error');
+        }
+    },
+
+    // Handle import config file selection
+    handleImportConfig(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const config = JSON.parse(e.target.result);
+                this.importConfig(config);
+            } catch (error) {
+                console.error('Error parsing config file:', error);
+                this.showImportStatus('Invalid JSON file', 'error');
+            }
+        };
+        reader.onerror = () => {
+            this.showImportStatus('Failed to read file', 'error');
+        };
+        reader.readAsText(file);
+
+        // Reset the input so the same file can be selected again
+        event.target.value = '';
+    },
+
+    // Import configuration from JSON object
+    importConfig(config) {
+        try {
+            // Validate config structure
+            if (!config || typeof config !== 'object') {
+                throw new Error('Invalid configuration format');
+            }
+
+            // Import favorites
+            if (Array.isArray(config.favorites)) {
+                this.favoriteGames = config.favorites;
+                this.saveFavorites();
+            }
+
+            // Import hidden servers
+            if (Array.isArray(config.hiddenServers)) {
+                this.hiddenServers = config.hiddenServers;
+                this.saveHiddenServers();
+            }
+
+            // Import settings
+            if (config.settings && typeof config.settings === 'object') {
+                this.settings = { ...this.settings, ...config.settings };
+                this.saveSettings();
+            }
+
+            // Import timezone
+            // Accept null/undefined to mean auto (clearing explicit timezone)
+            if (config.hasOwnProperty('timezone')) {
+                const tz = config.timezone;
+                this.selectedTimezone = (tz === null || tz === undefined || tz === 'auto') ? null : tz;
+                this.saveTimezone(this.selectedTimezone);
+                this.updateTimezoneDisplay(); // Update selector label immediately
+            }
+
+            // Import favorite server visibility
+            if (config.favoriteServerVisibility && typeof config.favoriteServerVisibility === 'object') {
+                this.favoriteServerVisibility = config.favoriteServerVisibility;
+                localStorage.setItem('sora_favorite_server_visibility', JSON.stringify(config.favoriteServerVisibility));
+            }
+
+            // Apply changes
+            this.applySettings();
+            this.renderGames();
+            this.renderFavorites();
+            this.updateHeroClock();
+
+            this.showImportStatus(`Configuration imported successfully! (${config.favorites?.length || 0} favorites)`, 'success');
+        } catch (error) {
+            console.error('Error importing config:', error);
+            this.showImportStatus('Failed to import: ' + error.message, 'error');
+        }
+    },
+
+    // Show import status message
+    showImportStatus(message, type) {
+        const statusEl = document.getElementById('import-status');
+        if (!statusEl) return;
+
+        statusEl.textContent = message;
+        statusEl.className = `import-status ${type}`;
+        statusEl.classList.remove('hidden');
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            statusEl.classList.add('hidden');
+        }, 5000);
+    },
+
+    // Toggle server visibility (hide/show)
+    toggleServerVisibility(gameId, serverName) {
+        const key = `${gameId}:${serverName}`;
+        const index = this.hiddenServers.indexOf(key);
+
+        if (index > -1) {
+            // Unhide
+            this.hiddenServers.splice(index, 1);
+        } else {
+            // Hide
+            this.hiddenServers.push(key);
+        }
+
+        this.saveHiddenServers();
+        this.renderGames();
+        this.renderHiddenServersList();
+    },
+
+    // Check if a server is hidden
+    isServerHidden(gameId, serverName) {
+        const key = `${gameId}:${serverName}`;
+        return this.hiddenServers.includes(key);
+    },
+
+    // Render hidden servers list in settings modal
+    renderHiddenServersList() {
+        const container = document.getElementById('hidden-servers-list');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (this.hiddenServers.length === 0) {
+            container.innerHTML = '<p class="no-hidden-servers">No hidden servers</p>';
+            return;
+        }
+
+        this.hiddenServers.forEach(key => {
+            const [gameId, serverName] = key.split(':');
+            const game = this.games.find(g => g.id === gameId);
+            const gameName = game ? game.name : gameId;
+
+            const tag = document.createElement('span');
+            tag.className = 'hidden-server-tag';
+            tag.innerHTML = `
+                <span>${gameName} - ${serverName}</span>
+                <i class="fas fa-times"></i>
+            `;
+            tag.title = 'Click to unhide';
+            tag.addEventListener('click', () => {
+                this.toggleServerVisibility(gameId, serverName);
+            });
+
+            container.appendChild(tag);
+        });
+    },
+
     // Setup event listeners
     setupEventListeners() {
-        // Navigation
+        // Navigation - only intercept section links (href="#"), allow real page navigation
         document.querySelectorAll('.nav-link').forEach(link => {
+            // Skip links that navigate to actual pages (not section anchors)
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('#') && href !== '#') {
+                return; // Let the browser handle real page navigation
+            }
+
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.handleNavigation(link);
@@ -129,53 +502,53 @@ const App = {
         if (this.searchTimeoutId) {
             clearTimeout(this.searchTimeoutId);
         }
-        
+
         // Set new timeout
         this.searchTimeoutId = setTimeout(() => {
             this.searchTerm = value;
             this.renderGames();
         }, 300); // 300ms delay
     },
-    
+
     // Handle navigation
     handleNavigation(link) {
         const section = link.dataset.section;
-        
+
         // Update active nav
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
-        
+
         // Show/hide sections
         document.getElementById('games-section').classList.toggle('hidden', section !== 'games');
         document.getElementById('about-section').classList.toggle('hidden', section !== 'about');
     },
-    
+
     // Load games data from API with performance optimizations
     async loadGames() {
         // Prevent multiple simultaneous requests
         if (this.isLoading) return;
-        
+
         this.isLoading = true;
-        
+
         try {
             const startTime = performance.now();
-            
+
             // Show loading state
             this.showGameLoadingState();
-            
+
             const response = await fetch('/api/games');
             if (response.ok) {
                 this.games = await response.json();
-                
+
                 // Preload critical images in background
                 this.preloadCriticalImages();
-                
+
                 const endTime = performance.now();
                 this.logPerformance('Games data loaded', endTime - startTime);
-                
+
                 this.renderGames();
                 this.renderFavorites();
-                
+
                 // Center scroll on initial load
                 setTimeout(() => this.centerScrollGames(), 100);
             } else {
@@ -196,14 +569,14 @@ const App = {
     showGameLoadingState() {
         const container = document.getElementById('games-container');
         if (!container) return;
-        
+
         // Clear existing content
         container.innerHTML = '';
-        
+
         // Create skeleton placeholders for better perceived performance
         const skeletonCount = Math.min(6, this.games.length || 6);
         const fragment = document.createDocumentFragment();
-        
+
         for (let i = 0; i < skeletonCount; i++) {
             const skeletonBanner = document.createElement('div');
             skeletonBanner.className = 'game-banner skeleton';
@@ -223,7 +596,7 @@ const App = {
             `;
             fragment.appendChild(skeletonBanner);
         }
-        
+
         container.appendChild(fragment);
     },
 
@@ -231,7 +604,7 @@ const App = {
     hideGameLoadingState() {
         const container = document.getElementById('games-container');
         if (!container) return;
-        
+
         // Remove skeleton placeholders
         container.querySelectorAll('.skeleton').forEach(el => el.remove());
     },
@@ -257,25 +630,25 @@ const App = {
     isImagePreloaded(src) {
         return this.preloadedImages.has(src);
     },
-    
+
     // Optimized render games banners with document fragments
     renderGames() {
         const container = document.getElementById('games-container');
         if (!container) return;
-        
+
         const startTime = performance.now();
-        
+
         // Filter games efficiently
         const filteredGames = this.searchTerm
             ? this.games.filter(game => game.name.toLowerCase().includes(this.searchTerm))
             : [...this.games]; // Create a copy to avoid mutations
-        
+
         // Ensure no-results state is cleared by default
         this.hideNoResultsMessage();
 
         // Get existing banners
         const existingBanners = Array.from(container.querySelectorAll('.game-banner'));
-        
+
         // Check if no games found after search
         if (this.searchTerm && filteredGames.length === 0) {
             // Clear existing banners
@@ -285,21 +658,21 @@ const App = {
             this.showNoResultsMessage();
             return;
         }
-        
+
         // If this is the initial load (no search term and no existing banners), don't animate
         if (!this.searchTerm && existingBanners.length === 0) {
             this.renderGamesBatched(container, filteredGames, false);
             this.centerScrollGames();
             return;
         }
-        
+
         // For search/filter operations, add hiding animation
         if (existingBanners.length > 0) {
             // Add hiding class to trigger fade-out
             existingBanners.forEach(banner => {
                 banner.classList.add('hiding');
             });
-            
+
             // Wait for hide animation, then update content
             setTimeout(() => {
                 this.renderGamesBatched(container, filteredGames, true);
@@ -314,54 +687,146 @@ const App = {
     // Batch DOM updates using document fragment for better performance
     renderGamesBatched(container, filteredGames, withAnimations) {
         const fragment = document.createDocumentFragment();
-        
+        const isCompactMode = this.settings?.compactMode ?? false;
+
         // Remove no-results class when showing games
         container.classList.remove('no-results-state');
-        
-        // Create game banners efficiently
+
+        // Toggle compact mode class on container
+        container.classList.toggle('compact-grid', isCompactMode);
+
+        // Create game elements efficiently
         filteredGames.forEach((game, index) => {
             if (!game.servers) {
                 console.warn(`Game ${game.name} missing servers data`);
                 return;
             }
-            
-            const banner = this.createGameBannerElement(game);
-            
+
+            // Choose element type based on compact mode
+            const element = isCompactMode
+                ? this.createCompactGameIcon(game)
+                : this.createGameBannerElement(game);
+
             if (withAnimations && this.searchTerm) {
                 // Set initial animation state
-                banner.style.opacity = '0';
-                banner.style.transform = 'translateY(20px)';
-                banner.style.transition = `opacity 0.3s ease ${index * 50}ms, transform 0.3s ease ${index * 50}ms`;
-                
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = `opacity 0.3s ease ${index * 50}ms, transform 0.3s ease ${index * 50}ms`;
+
                 // Store for later animation trigger
-                banner.classList.add('needs-animation');
+                element.classList.add('needs-animation');
             }
-            
-            fragment.appendChild(banner);
+
+            fragment.appendChild(element);
         });
-        
+
         // Replace entire content in one operation
         container.innerHTML = '';
         container.appendChild(fragment);
-        
+
         // Trigger animations after DOM update
         if (withAnimations && this.searchTerm) {
             requestAnimationFrame(() => {
-                container.querySelectorAll('.needs-animation').forEach((banner, index) => {
+                container.querySelectorAll('.needs-animation').forEach((el, index) => {
                     setTimeout(() => {
-                        banner.style.opacity = '1';
-                        banner.style.transform = 'translateY(0)';
-                        banner.classList.remove('needs-animation');
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                        el.classList.remove('needs-animation');
                     }, 50);
                 });
             });
         }
-        
+
         // Re-initialize lazy loading
         setTimeout(() => {
             this.reinitLazyLoading();
             this.updateAllCountdowns();
         }, 100);
+    },
+
+    // Create compact game icon for grid mode
+    createCompactGameIcon(game) {
+        const icon = document.createElement('div');
+        icon.className = 'compact-game-icon';
+        icon.setAttribute('data-game-id', game.id);
+
+        const img = document.createElement('img');
+        img.src = game.banner;
+        img.alt = game.name;
+        img.loading = 'lazy';
+
+        const name = document.createElement('span');
+        name.className = 'compact-game-name';
+        name.textContent = game.name;
+
+        // Add interactive favorite toggle button
+        const starBtn = document.createElement('button');
+        starBtn.className = 'compact-favorite-btn';
+        starBtn.setAttribute('aria-label', this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites');
+        starBtn.title = this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites';
+
+        if (this.isFavorite(game.id)) {
+            starBtn.classList.add('favorited');
+        }
+
+        starBtn.innerHTML = '<i class="fas fa-star"></i>';
+
+        starBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent opening the modal
+            this.toggleFavorite(game.id);
+        });
+
+        icon.appendChild(starBtn);
+        icon.appendChild(img);
+        icon.appendChild(name);
+
+        // Click to open game detail popup (reuse the favorite detail modal)
+        icon.addEventListener('click', () => {
+            this.openGameDetailModal(game);
+        });
+
+        return icon;
+    },
+
+    // Open game detail modal (used for compact mode)
+    openGameDetailModal(game) {
+        const modal = document.getElementById('favorite-detail-modal');
+        const title = document.getElementById('favorite-detail-title');
+        const body = document.getElementById('favorite-detail-body');
+
+        if (!modal || !title || !body) return;
+
+        // Set game title
+        title.textContent = game.name;
+
+        // Clear previous content
+        body.innerHTML = '';
+
+        // Filter hidden servers
+        const visibleServers = game.servers.filter(server => !this.isServerHidden(game.id, server.name));
+
+        // Create server cards
+        visibleServers.forEach(server => {
+            const serverCard = this.createFavoriteDetailServerCard(game, server);
+            body.appendChild(serverCard);
+        });
+
+        // Show modal
+        modal.classList.remove('hidden');
+
+        // Setup close handlers
+        const closeBtn = document.getElementById('close-favorite-detail');
+        const backdrop = modal.querySelector('.favorite-detail-backdrop');
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+        };
+
+        if (closeBtn) closeBtn.onclick = closeModal;
+        if (backdrop) backdrop.onclick = closeModal;
+
+        // Update countdowns in modal
+        this.updateModalCountdowns(game);
     },
 
     // Show "no results" message centered inside wrapper (not affected by rotations)
@@ -406,11 +871,11 @@ const App = {
         const banner = document.createElement('div');
         banner.className = 'game-banner';
         banner.setAttribute('data-game-id', game.id);
-        
+
         // Create banner image wrapper
         const bannerImageWrapper = document.createElement('div');
         bannerImageWrapper.className = 'game-banner-image-wrapper';
-        
+
         // Create image element with lazy loading
         const img = document.createElement('img');
         img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjUyNTI1Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPjIwMHgxMjU8L3RleHQ+PC9zdmc+';
@@ -418,58 +883,61 @@ const App = {
         img.setAttribute('alt', `${game.name} Banner`);
         img.className = 'game-banner-img lazy-load';
         img.setAttribute('loading', 'lazy');
-        
+
         // Create star toggle button
         const starButton = document.createElement('button');
         starButton.className = 'star-toggle';
         starButton.setAttribute('data-game-id', game.id);
         starButton.setAttribute('aria-label', this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites');
         starButton.title = this.isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites';
-        
+
         if (this.isFavorite(game.id)) {
             starButton.classList.add('favorited');
         }
-        
+
         const starIcon = document.createElement('i');
         starIcon.className = 'fas fa-star';
         starButton.appendChild(starIcon);
-        
+
         starButton.onclick = (e) => {
             e.stopPropagation();
             this.toggleFavorite(game.id);
         };
-        
+
         bannerImageWrapper.appendChild(img);
         bannerImageWrapper.appendChild(starButton);
-        
+
         // Create game info
         const gameInfo = document.createElement('div');
         gameInfo.className = 'game-info';
-        
+
         const gameName = document.createElement('h3');
         gameName.className = 'game-name';
         gameName.textContent = game.name;
-        
+
         const gameDescription = document.createElement('p');
         gameDescription.className = 'game-description';
         gameDescription.textContent = game.description;
-        
+
         gameInfo.appendChild(gameName);
         gameInfo.appendChild(gameDescription);
-        
+
         // Create servers row
         const serversRow = document.createElement('div');
         serversRow.className = 'servers-row';
-        
-        game.servers.forEach(server => {
+
+        // Filter out hidden servers
+        const visibleServers = game.servers.filter(server => !this.isServerHidden(game.id, server.name));
+
+        visibleServers.forEach(server => {
             serversRow.appendChild(this.createServerCardElement(game, server));
         });
-        
+
         // Assemble banner
         banner.appendChild(bannerImageWrapper);
         banner.appendChild(gameInfo);
         banner.appendChild(serversRow);
-        
+
         return banner;
     },
 
@@ -583,7 +1051,7 @@ const App = {
         removeButton.className = 'favorite-remove';
         removeButton.setAttribute('aria-label', 'Remove from favorites');
         removeButton.title = 'Remove from favorites';
-        
+
         const removeIcon = document.createElement('i');
         removeIcon.className = 'fas fa-times';
         removeButton.appendChild(removeIcon);
@@ -613,7 +1081,7 @@ const App = {
         const modal = document.getElementById('favorite-detail-modal');
         const title = document.getElementById('favorite-detail-title');
         const body = document.getElementById('favorite-detail-body');
-        
+
         if (!modal || !title || !body) return;
 
         // Ensure storage namespace exists
@@ -635,11 +1103,11 @@ const App = {
 
         // Show modal instantly (no animation)
         modal.classList.remove('hidden');
-        
+
         // Setup close handlers
         const closeBtn = document.getElementById('close-favorite-detail');
         const backdrop = modal.querySelector('.favorite-detail-backdrop');
-        
+
         const closeModal = () => {
             modal.classList.add('hidden');
         };
@@ -651,110 +1119,143 @@ const App = {
         this.updateModalCountdowns(game);
     },
 
-        // Create server card for favorite detail modal (collapsible with persisted state)
-        createFavoriteDetailServerCard(game, server) {
-            const card = document.createElement('div');
-            card.className = 'favorite-detail-server-card';
-    
-            const key = `${game.id}:${server.name}`;
-    
-            // Header (server name + toggle)
-            const header = document.createElement('button');
-            header.className = 'favorite-detail-server-header';
-            header.type = 'button';
-    
-            // Left group for name and timezone
-            const leftGroup = document.createElement('div');
-            leftGroup.className = 'favorite-detail-server-left';
-    
-            const serverNameEl = document.createElement('div');
-            serverNameEl.className = 'favorite-detail-server-name';
-            serverNameEl.textContent = server.name;
-    
-            const timezoneEl = document.createElement('div');
-            timezoneEl.className = 'favorite-detail-server-timezone';
-            timezoneEl.innerHTML = `<i class="fas fa-globe"></i> ${server.timezone}`;
-    
-            leftGroup.appendChild(serverNameEl);
-            leftGroup.appendChild(timezoneEl);
-    
-            const toggleIcon = document.createElement('i');
-            toggleIcon.className = 'fas fa-chevron-up favorite-detail-toggle-icon';
-    
-            header.appendChild(leftGroup);
-            header.appendChild(toggleIcon);
-    
-            // Body (wraps all info rows)
-            const body = document.createElement('div');
-            body.className = 'favorite-detail-server-body';
-    
-            // Daily Reset
-            const dailyReset = document.createElement('div');
-            dailyReset.className = 'favorite-detail-info-item';
-            dailyReset.innerHTML = `
+    // Create server card for favorite detail modal (collapsible with persisted state)
+    createFavoriteDetailServerCard(game, server) {
+        const card = document.createElement('div');
+        card.className = 'favorite-detail-server-card';
+
+        const key = `${game.id}:${server.name}`;
+
+        // Header (server name + toggle)
+        const header = document.createElement('button');
+        header.className = 'favorite-detail-server-header';
+        header.type = 'button';
+
+        // Left group for name and timezone
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'favorite-detail-server-left';
+
+        const serverNameEl = document.createElement('div');
+        serverNameEl.className = 'favorite-detail-server-name';
+        serverNameEl.textContent = server.name;
+
+        const timezoneEl = document.createElement('div');
+        timezoneEl.className = 'favorite-detail-server-timezone';
+        timezoneEl.innerHTML = `<i class="fas fa-globe"></i> ${server.timezone}`;
+
+        leftGroup.appendChild(serverNameEl);
+        leftGroup.appendChild(timezoneEl);
+
+        // Right group for actions
+        const rightGroup = document.createElement('div');
+        rightGroup.className = 'favorite-detail-server-right';
+        rightGroup.style.display = 'flex';
+        rightGroup.style.alignItems = 'center';
+        rightGroup.style.gap = '12px';
+
+        // Hide Server Button
+        const hideBtn = document.createElement('button');
+        hideBtn.className = 'favorite-detail-hide-btn';
+        hideBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        hideBtn.title = 'Hide this server completely';
+        hideBtn.style.background = 'none';
+        hideBtn.style.border = 'none';
+        hideBtn.style.color = 'var(--text-muted)';
+        hideBtn.style.cursor = 'pointer';
+        hideBtn.style.padding = '4px';
+        hideBtn.style.transition = 'color 0.2s';
+
+        hideBtn.onmouseover = () => hideBtn.style.color = 'var(--error)';
+        hideBtn.onmouseout = () => hideBtn.style.color = 'var(--text-muted)';
+
+        hideBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (confirm(`Hide ${server.name} server? You can unhide it in Settings.`)) {
+                this.toggleServerVisibility(game.id, server.name);
+                card.remove(); // Remove immediately from modal
+            }
+        };
+
+        const toggleIcon = document.createElement('i');
+        toggleIcon.className = 'fas fa-chevron-up favorite-detail-toggle-icon';
+
+        rightGroup.appendChild(hideBtn);
+        rightGroup.appendChild(toggleIcon);
+
+        header.appendChild(leftGroup);
+        header.appendChild(rightGroup);
+
+        // Body (wraps all info rows)
+        const body = document.createElement('div');
+        body.className = 'favorite-detail-server-body';
+
+        // Daily Reset
+        const dailyReset = document.createElement('div');
+        dailyReset.className = 'favorite-detail-info-item';
+        dailyReset.innerHTML = `
                 <div class="favorite-detail-label">Daily Reset</div>
                 <div class="favorite-detail-value">${this.formatResetTime(server.dailyReset)}</div>
             `;
-    
-            // Countdown
-            const countdown = document.createElement('div');
-            countdown.className = 'favorite-detail-info-item favorite-detail-countdown-item';
-            countdown.innerHTML = `
+
+        // Countdown
+        const countdown = document.createElement('div');
+        countdown.className = 'favorite-detail-info-item favorite-detail-countdown-item';
+        countdown.innerHTML = `
                 <div class="favorite-detail-label">Time Until Reset</div>
                 <div class="favorite-detail-countdown" data-modal-countdown="${game.id}-${server.name}">${this.getServerCountdown(game, server)}</div>
             `;
-    
-            // Server Current Time
-            const serverTime = document.createElement('div');
-            serverTime.className = 'favorite-detail-info-item';
-            serverTime.innerHTML = `
+
+        // Server Current Time
+        const serverTime = document.createElement('div');
+        serverTime.className = 'favorite-detail-info-item';
+        serverTime.innerHTML = `
                 <div class="favorite-detail-label">Server Current Time</div>
                 <div class="favorite-detail-value" data-modal-server-time="${game.id}-${server.name}">${this.getServerCurrentTime(server)}</div>
             `;
-    
-            // User Timezone Reset
-            const userReset = document.createElement('div');
-            userReset.className = 'favorite-detail-info-item';
-            userReset.innerHTML = `
+
+        // User Timezone Reset
+        const userReset = document.createElement('div');
+        userReset.className = 'favorite-detail-info-item';
+        userReset.innerHTML = `
                 <div class="favorite-detail-label">Reset in Your Timezone</div>
                 <div class="favorite-detail-value" data-modal-user-reset="${game.id}-${server.name}">${this.getResetTimeInUserTimezone(server)}</div>
             `;
-    
-            body.appendChild(dailyReset);
-            body.appendChild(countdown);
-            body.appendChild(serverTime);
-            body.appendChild(userReset);
-    
-            // Apply persisted visibility: default open unless stored as hidden
-            const isHidden = this.isFavoriteServerHidden(key);
-            if (isHidden) {
-                card.classList.add('collapsed');
+
+        body.appendChild(dailyReset);
+        body.appendChild(countdown);
+        body.appendChild(serverTime);
+        body.appendChild(userReset);
+
+        // Apply persisted visibility: default open unless stored as hidden
+        const isHidden = this.isFavoriteServerHidden(key);
+        if (isHidden) {
+            card.classList.add('collapsed');
+            body.style.display = 'none';
+            toggleIcon.className = 'fas fa-chevron-down favorite-detail-toggle-icon';
+        }
+
+        // Toggle handler with persistence
+        const toggleVisibility = (e) => {
+            e.stopPropagation();
+            const currentlyHidden = card.classList.toggle('collapsed');
+            if (currentlyHidden) {
                 body.style.display = 'none';
                 toggleIcon.className = 'fas fa-chevron-down favorite-detail-toggle-icon';
+                this.setFavoriteServerHidden(key, true);
+            } else {
+                body.style.display = '';
+                toggleIcon.className = 'fas fa-chevron-up favorite-detail-toggle-icon';
+                this.setFavoriteServerHidden(key, false);
             }
-    
-            // Toggle handler with persistence
-            const toggleVisibility = (e) => {
-                e.stopPropagation();
-                const currentlyHidden = card.classList.toggle('collapsed');
-                if (currentlyHidden) {
-                    body.style.display = 'none';
-                    toggleIcon.className = 'fas fa-chevron-down favorite-detail-toggle-icon';
-                    this.setFavoriteServerHidden(key, true);
-                } else {
-                    body.style.display = '';
-                    toggleIcon.className = 'fas fa-chevron-up favorite-detail-toggle-icon';
-                    this.setFavoriteServerHidden(key, false);
-                }
-            };
-    
-            header.addEventListener('click', toggleVisibility);
-    
-            card.appendChild(header);
-            card.appendChild(body);
-    
-            return card;
-        },
+        };
+
+        header.addEventListener('click', toggleVisibility);
+
+        card.appendChild(header);
+        card.appendChild(body);
+
+        return card;
+    },
 
     // Update countdowns in modal
     updateModalCountdowns(game) {
@@ -779,96 +1280,108 @@ const App = {
     createServerCardElement(game, server) {
         const card = document.createElement('div');
         card.className = 'server-card';
-        
+
         const cardId = `${game.id}-${server.name.replace(/\s+/g, '-').toLowerCase()}`;
         card.setAttribute('data-card-id', cardId);
-        
+
         const main = document.createElement('div');
         main.className = 'server-card-main';
         main.onclick = (e) => this.toggleServerDetails(cardId, e);
-        
+
         const header = document.createElement('div');
         header.className = 'server-header';
-        
+
         const name = document.createElement('span');
         name.className = 'server-name';
         name.textContent = server.name;
-        
+
         const icon = document.createElement('i');
         icon.className = 'fas fa-chevron-down server-expand-icon';
-        
+
         header.appendChild(name);
         header.appendChild(icon);
-        
+
         const timezone = document.createElement('div');
         timezone.className = 'server-timezone';
         timezone.textContent = server.timezone;
-        
+
         const reset = document.createElement('div');
         reset.className = 'server-reset';
         reset.setAttribute('data-game-id', game.id);
         reset.setAttribute('data-server', server.name);
         reset.setAttribute('data-reset-info', 'true');
         reset.textContent = this.formatResetTime(server.dailyReset);
-        
+
         const countdown = document.createElement('div');
         countdown.className = 'server-countdown';
         countdown.setAttribute('data-game-id', game.id);
         countdown.setAttribute('data-server', server.name);
         countdown.textContent = this.getServerCountdown(game, server);
-        
+
         main.appendChild(header);
         main.appendChild(timezone);
         main.appendChild(reset);
         main.appendChild(countdown);
-        
+
         const details = document.createElement('div');
         details.className = 'server-details';
         details.setAttribute('data-details-id', cardId);
-        
+
         const detailsContent = document.createElement('div');
         detailsContent.className = 'server-details-content';
-        
+
         const currentTimeRow = document.createElement('div');
         currentTimeRow.className = 'detail-row';
         currentTimeRow.title = 'Server Current Time';
-        
+
         const currentTimeIcon = document.createElement('i');
         currentTimeIcon.className = 'fas fa-server detail-icon';
-        
+
         const currentTimeValue = document.createElement('div');
         currentTimeValue.className = 'detail-value';
         currentTimeValue.setAttribute('data-server-current-time', `${game.id}-${server.name}`);
         currentTimeValue.textContent = this.getServerCurrentTime(server);
-        
+
         currentTimeRow.appendChild(currentTimeIcon);
         currentTimeRow.appendChild(currentTimeValue);
-        
+
         const resetTimeRow = document.createElement('div');
         resetTimeRow.className = 'detail-row';
         resetTimeRow.title = 'Reset in Your Time';
-        
+
         const resetTimeIcon = document.createElement('i');
         resetTimeIcon.className = 'fas fa-clock detail-icon';
-        
+
         const resetTimeValue = document.createElement('div');
         resetTimeValue.className = 'detail-value';
         resetTimeValue.setAttribute('data-user-reset-time', `${game.id}-${server.name}`);
         resetTimeValue.textContent = this.getResetTimeInUserTimezone(server);
-        
+
         resetTimeRow.appendChild(resetTimeIcon);
         resetTimeRow.appendChild(resetTimeValue);
-        
+
         detailsContent.appendChild(currentTimeRow);
         detailsContent.appendChild(resetTimeRow);
         details.appendChild(detailsContent);
-        
+
         card.appendChild(main);
         card.appendChild(details);
-        
+
+        // Add hide button
+        const hideBtn = document.createElement('button');
+        hideBtn.className = 'server-hide-btn';
+        hideBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        hideBtn.title = 'Hide this server';
+        hideBtn.setAttribute('aria-label', `Hide ${server.name} server`);
+        hideBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.toggleServerVisibility(game.id, server.name);
+        };
+        card.appendChild(hideBtn);
+
         return card;
     },
-    
+
     // Ensure horizontal scroll always starts at the first game
     // This prevents new games from shifting the viewport away from Genshin Impact
     centerScrollGames() {
@@ -879,7 +1392,7 @@ const App = {
         // Using instant jump avoids fighting with user scroll after first render.
         wrapper.scrollTo({ left: 0, behavior: 'instant' in wrapper ? 'instant' : 'auto' });
     },
-    
+
     // Create game banner HTML
     createGameBanner(game) {
         return `
@@ -906,7 +1419,7 @@ const App = {
 
         // Always display the canonical server reset time in SERVER timezone (does not change with user TZ)
         const canonicalServerResetLabel = this.formatResetTime(server.dailyReset);
-        
+
         // Generate unique ID for this server card
         const cardId = `${game.id}-${server.name.replace(/\s+/g, '-').toLowerCase()}`;
 
@@ -951,17 +1464,17 @@ const App = {
         if (event) {
             event.stopPropagation();
         }
-        
+
         const card = document.querySelector(`[data-card-id="${cardId}"]`);
         if (!card) return;
 
         const details = card.querySelector(`[data-details-id="${cardId}"]`);
         const icon = card.querySelector('.server-expand-icon');
-        
+
         if (!details || !icon) return;
 
         const isExpanded = card.classList.contains('expanded');
-        
+
         if (isExpanded) {
             card.classList.remove('expanded');
             details.style.maxHeight = '0';
@@ -983,11 +1496,12 @@ const App = {
         const offsetMs = server.offset * 60 * 60 * 1000;
         const serverNow = new Date(nowUtc.getTime() + offsetMs);
 
+        const use24h = this.settings?.use24HourFormat ?? true;
         const formatter = new Intl.DateTimeFormat('en-US', {
-            hour: 'numeric',
+            hour: use24h ? '2-digit' : 'numeric',
             minute: '2-digit',
             second: '2-digit',
-            hour12: true,
+            hour12: !use24h,
             timeZone: 'UTC'
         });
 
@@ -1010,7 +1524,7 @@ const App = {
         }
 
         const nowUtc = new Date();
-        
+
         // Validate dailyReset format
         const resetParts = server.dailyReset.split(':');
         if (resetParts.length !== 2) {
@@ -1018,10 +1532,10 @@ const App = {
             // Return a default reset time (24 hours from now) as fallback
             return new Date(Date.now() + 24 * 60 * 60 * 1000);
         }
-        
+
         const resetHours = parseInt(resetParts[0], 10);
         const resetMinutes = parseInt(resetParts[1], 10);
-        
+
         // Validate parsed time values
         if (isNaN(resetHours) || isNaN(resetMinutes) ||
             resetHours < 0 || resetHours > 23 ||
@@ -1102,23 +1616,23 @@ const App = {
         return `${timeString}${dayLabel}`;
     },
 
-    // Format reset time to 12-hour format without leading zeros (except 10-12)
+    // Format reset time based on user's 24h preference
     formatResetTime(time24) {
         // Validate input
         if (!time24 || typeof time24 !== 'string') {
             console.warn('Invalid time format:', time24);
             return 'Invalid Time';
         }
-        
+
         const timeParts = time24.split(':');
         if (timeParts.length !== 2) {
             console.warn('Invalid time format:', time24);
             return 'Invalid Time';
         }
-        
+
         const hours24 = parseInt(timeParts[0], 10);
         const minutes = parseInt(timeParts[1], 10);
-        
+
         // Validate parsed values
         if (isNaN(hours24) || isNaN(minutes) ||
             hours24 < 0 || hours24 > 23 ||
@@ -1126,18 +1640,23 @@ const App = {
             console.warn('Invalid time values:', hours24, minutes);
             return 'Invalid Time';
         }
-        
-        const ampm = hours24 >= 12 ? 'PM' : 'AM';
-        let hours12 = hours24 % 12;
-        hours12 = hours12 === 0 ? 12 : hours12; // Convert 0 to 12
-        
-        // Only show leading zero for hours 10, 11, 12
-        const hoursStr = (hours12 >= 10) ? hours12.toString() : hours12.toString();
+
+        const use24h = this.settings?.use24HourFormat ?? true;
         const minutesStr = minutes.toString().padStart(2, '0');
-        
-        return `${hoursStr}:${minutesStr} ${ampm}`;
+
+        if (use24h) {
+            // 24-hour format
+            const hoursStr = hours24.toString().padStart(2, '0');
+            return `${hoursStr}:${minutesStr}`;
+        } else {
+            // 12-hour format
+            const ampm = hours24 >= 12 ? 'PM' : 'AM';
+            let hours12 = hours24 % 12;
+            hours12 = hours12 === 0 ? 12 : hours12;
+            return `${hours12}:${minutesStr} ${ampm}`;
+        }
     },
-    
+
     // Get countdown to next reset, based on FIXED server reset time
     // Server defines: dailyReset at server.timezone/offset.
     // We:
@@ -1150,9 +1669,11 @@ const App = {
 
         let diff = nextResetUtc.getTime() - nowUtc.getTime();
 
+        const showSeconds = this.settings?.showSeconds ?? true;
+
         // If negative (shouldn't happen with correct calc), clamp to zero
         if (diff <= 0) {
-            return '00H 00M 00S';
+            return showSeconds ? '00H 00M 00S' : '00H 00M';
         }
 
         const h = Math.floor(diff / (1000 * 60 * 60));
@@ -1161,9 +1682,13 @@ const App = {
         diff -= m * 60 * 1000;
         const s = Math.floor(diff / 1000);
 
-        return `${h}H ${m}M ${s}S`;
+        if (showSeconds) {
+            return `${h}H ${m}M ${s}S`;
+        } else {
+            return `${h}H ${m}M`;
+        }
     },
-    
+
     // Start countdown timers
     startCountdownTimers() {
         // Update countdowns every second
@@ -1171,7 +1696,7 @@ const App = {
             this.updateAllCountdowns();
         }, 1000);
     },
-    
+
     // Update all countdown timers
     updateAllCountdowns() {
         this.games.forEach(game => {
@@ -1236,13 +1761,13 @@ const App = {
             this.showNotification('Failed to refresh games', 'error');
         }
     },
-    
+
     // Show notification
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.textContent = message;
-        
+
         Object.assign(notification.style, {
             position: 'fixed',
             top: '20px',
@@ -1256,7 +1781,7 @@ const App = {
             transition: 'transform 0.3s ease',
             maxWidth: '300px'
         });
-        
+
         const colors = {
             success: '#10b981',
             error: '#ef4444',
@@ -1264,13 +1789,13 @@ const App = {
             warning: '#f59e0b'
         };
         notification.style.backgroundColor = colors[type] || colors.info;
-        
+
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             notification.style.transform = 'translateX(0)';
         }, 100);
-        
+
         setTimeout(() => {
             notification.style.transform = 'translateX(400px)';
             setTimeout(() => {
@@ -1288,16 +1813,16 @@ const App = {
         if (!timeEl || !dateEl) return;
 
         const monthNames = [
-            'January','February','March','April','May','June',
-            'July','August','September','October','November','December'
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
         ];
 
         const update = () => {
             const now = new Date();
-            
+
             // Get time components in the selected timezone
             const timezone = this.selectedTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-            
+
             const formatter = new Intl.DateTimeFormat('en-US', {
                 timeZone: timezone,
                 hour: 'numeric',
@@ -1308,16 +1833,16 @@ const App = {
                 month: 'numeric',
                 year: 'numeric'
             });
-            
+
             const parts = {};
             formatter.formatToParts(now).forEach(part => {
                 parts[part.type] = part.value;
             });
-            
+
             let hh = parseInt(parts.hour);
             const mm = parts.minute.padStart(2, '0');
             const ss = parts.second.padStart(2, '0');
-            
+
             // Convert to 12-hour format
             const ampm = hh >= 12 ? 'PM' : 'AM';
             hh = hh % 12;
@@ -1397,12 +1922,12 @@ const App = {
             const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
             const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
             const offset = (tzDate.getTime() - utcDate.getTime()) / (1000 * 60 * 60);
-            
+
             const sign = offset >= 0 ? '+' : '-';
             const absOffset = Math.abs(offset);
             const hours = Math.floor(absOffset);
             const minutes = Math.round((absOffset - hours) * 60);
-            
+
             if (minutes === 0) {
                 return `UTC${sign}${hours}`;
             } else {
@@ -1415,7 +1940,20 @@ const App = {
 
     // Load saved timezone from localStorage
     loadSavedTimezone() {
-        const saved = localStorage.getItem('selectedTimezone');
+        // Try modern key first
+        let saved = localStorage.getItem('selectedTimezone');
+
+        // Backward compatibility: fallback to legacy 'sora_timezone' key
+        if (!saved) {
+            const legacy = localStorage.getItem('sora_timezone');
+            if (legacy) {
+                saved = legacy;
+                // Migrate to new key
+                this.saveTimezone(legacy);
+                localStorage.removeItem('sora_timezone');
+            }
+        }
+
         if (saved && saved !== 'auto') {
             this.selectedTimezone = saved;
             this.updateTimezoneDisplay();
@@ -1567,7 +2105,7 @@ const App = {
 
     async submitGameRequest(event) {
         event.preventDefault();
-        
+
         const form = event.target;
         const btn = document.getElementById('submit-request-btn');
         const btnText = btn.querySelector('.btn-text');
@@ -1699,7 +2237,7 @@ const App = {
                     if (entry.isIntersecting) {
                         const img = entry.target;
                         const src = img.dataset.src;
-                        
+
                         if (src) {
                             // Check if image is already preloaded
                             if (this.isImagePreloaded(src)) {
@@ -1709,27 +2247,27 @@ const App = {
                                 observer.unobserve(img);
                                 return;
                             }
-                            
+
                             // Start loading the image
                             img.src = src;
-                            
+
                             // Remove the lazy-load class and add loading class
                             img.classList.remove('lazy-load');
                             img.classList.add('image-loading');
-                            
+
                             // Handle image load
                             img.onload = () => {
                                 img.classList.remove('image-loading');
                                 img.classList.add('image-loaded');
                             };
-                            
+
                             // Handle image error
                             img.onerror = () => {
                                 img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjUyNTI1Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPjIwMHgxMjU8L3RleHQ+PC9zdmc+';
                                 img.classList.remove('image-loading');
                                 img.classList.add('image-error');
                             };
-                            
+
                             // Stop observing this image
                             observer.unobserve(img);
                         }
@@ -1742,7 +2280,7 @@ const App = {
 
             // Observe all lazy-load images
             this.observeLazyImages(imageObserver);
-            
+
             // Store observer for future use
             this.imageObserver = imageObserver;
         } else {
@@ -1824,12 +2362,12 @@ const App = {
     logPerformance(metric, value) {
         const timestamp = new Date().toISOString();
         console.log(`[PERF ${timestamp}] ${metric}: ${Math.round(value)}ms`);
-        
+
         // Store performance data for analysis
         if (!this.performanceData) {
             this.performanceData = [];
         }
-        
+
         this.performanceData.push({
             metric,
             value,
@@ -1840,7 +2378,7 @@ const App = {
                 downlink: navigator.connection.downlink
             } : 'unknown'
         });
-        
+
         // Keep only last 50 entries to prevent memory bloat
         if (this.performanceData.length > 50) {
             this.performanceData = this.performanceData.slice(-50);
@@ -1852,7 +2390,7 @@ const App = {
         if (!this.performanceData || this.performanceData.length === 0) {
             return 'No performance data available';
         }
-        
+
         const report = {};
         this.performanceData.forEach(entry => {
             if (!report[entry.metric]) {
@@ -1860,7 +2398,7 @@ const App = {
             }
             report[entry.metric].push(entry.value);
         });
-        
+
         // Calculate averages
         const summary = {};
         Object.keys(report).forEach(metric => {
@@ -1872,7 +2410,7 @@ const App = {
                 count: values.length
             };
         });
-        
+
         return summary;
     },
 
@@ -1936,7 +2474,7 @@ const App = {
 
     async submitReportIssue(event) {
         event.preventDefault();
-        
+
         const form = event.target;
         const btn = document.getElementById('submit-report-btn');
         const btnText = btn.querySelector('.btn-text');
@@ -2009,46 +2547,46 @@ const App = {
             this.resetReportSubmitButton();
         }
     },
-// --- Favorite modal server visibility persistence ---
-loadFavoriteServerVisibility() {
-    try {
-        const raw = localStorage.getItem('sora_favorite_server_visibility');
-        return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-        console.warn('Failed to load favorite server visibility, resetting.', e);
-        return {};
-    }
-},
+    // --- Favorite modal server visibility persistence ---
+    loadFavoriteServerVisibility() {
+        try {
+            const raw = localStorage.getItem('sora_favorite_server_visibility');
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.warn('Failed to load favorite server visibility, resetting.', e);
+            return {};
+        }
+    },
 
-saveFavoriteServerVisibility() {
-    try {
-        localStorage.setItem(
-            'sora_favorite_server_visibility',
-            JSON.stringify(this.favoriteServerVisibility || {})
-        );
-    } catch (e) {
-        console.warn('Failed to save favorite server visibility.', e);
-    }
-},
+    saveFavoriteServerVisibility() {
+        try {
+            localStorage.setItem(
+                'sora_favorite_server_visibility',
+                JSON.stringify(this.favoriteServerVisibility || {})
+            );
+        } catch (e) {
+            console.warn('Failed to save favorite server visibility.', e);
+        }
+    },
 
-isFavoriteServerHidden(key) {
-    if (!this.favoriteServerVisibility) {
-        this.favoriteServerVisibility = this.loadFavoriteServerVisibility();
-    }
-    return !!this.favoriteServerVisibility[key];
-},
+    isFavoriteServerHidden(key) {
+        if (!this.favoriteServerVisibility) {
+            this.favoriteServerVisibility = this.loadFavoriteServerVisibility();
+        }
+        return !!this.favoriteServerVisibility[key];
+    },
 
-setFavoriteServerHidden(key, hidden) {
-    if (!this.favoriteServerVisibility) {
-        this.favoriteServerVisibility = this.loadFavoriteServerVisibility();
+    setFavoriteServerHidden(key, hidden) {
+        if (!this.favoriteServerVisibility) {
+            this.favoriteServerVisibility = this.loadFavoriteServerVisibility();
+        }
+        if (hidden) {
+            this.favoriteServerVisibility[key] = true;
+        } else {
+            delete this.favoriteServerVisibility[key];
+        }
+        this.saveFavoriteServerVisibility();
     }
-    if (hidden) {
-        this.favoriteServerVisibility[key] = true;
-    } else {
-        delete this.favoriteServerVisibility[key];
-    }
-    this.saveFavoriteServerVisibility();
-}
 };
 
 // Initialize app when DOM is loaded
@@ -2120,7 +2658,7 @@ document.addEventListener('DOMContentLoaded', () => {
             App.submitReportIssue(e);
         });
     }
-    
+
     // Add entrance animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -2130,7 +2668,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, { threshold: 0.1 });
-    
+
     // Observe game banners for animation
     setTimeout(() => {
         document.querySelectorAll('.game-banner').forEach((banner, index) => {

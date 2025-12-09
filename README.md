@@ -16,6 +16,9 @@ bun run dev
 # Build and start
 bun run build
 bun run start
+
+# Run tests
+bun test
 ```
 
 ## What's This?
@@ -27,13 +30,48 @@ Just load it up, select your timezone, and see countdown timers for each game se
 
 ## Features
 
-- 1. Real-time countdowns to server resets
-- 2. Support for multiple timezones
-- 3. Mobile-friendly design
-- 4. Easy to extend with more games
-- 5. Discord webhook - Request and Report
-- 6. Favorite listing
-- 7. ... and many more planned
+- Real-time countdowns to server resets
+- Support for multiple timezones
+- Mobile-friendly design (PWA installable)
+- Easy to extend with more games
+- Discord webhook - Request and Report
+- Import/Export your favorites and settings
+- Hide specific servers you don't play
+- Customization: 24h toggle, seconds display, compact mode
+- Dashboard with dailies tracking
+- Favorites with compact mode view
+
+## Testing
+
+Sora uses Bun's built-in test runner:
+
+```bash
+# Run all tests
+bun test
+
+# Run tests in watch mode
+bun test --watch
+
+# Run with coverage report
+bun test --coverage
+
+# Run specific test files
+bun test tests/unit/gamesLoader.test.ts
+bun test tests/integration/api.test.ts
+bun test tests/security/security.test.ts
+```
+
+### Test Categories
+
+| Category | Description |
+|----------|-------------|
+| Unit Tests | Core functions: gamesLoader, logger |
+| Integration Tests | API routes, page serving, static files |
+| Security Tests | Path traversal, input validation, error disclosure |
+
+## Privacy Policy
+
+Sora operates on a **Local-First** model. All your data (favorites, settings, hidden servers) is stored entirely in your browser's `localStorage`. We do not track you, and your data never leaves your device unless you explicitly export it.
 
 ## Tech Stack
 
@@ -41,6 +79,7 @@ Just load it up, select your timezone, and see countdown timers for each game se
 - **Framework**: TinyHTTP (lightweight web framework)
 - **Language**: TypeScript
 - **Config**: YAML-based game data
+- **Testing**: Bun Test (built-in test runner)
 
 ## Adding Games
 
