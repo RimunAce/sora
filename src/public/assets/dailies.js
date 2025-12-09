@@ -82,9 +82,26 @@ const DailiesApp = {
             const savedTimers = localStorage.getItem('sora_dailies_timers');
             this.activeTimers = savedTimers ? JSON.parse(savedTimers) : [];
 
-            // Clean up expired timers
+            // Re-establish notification callbacks for persisted timers
             const now = Date.now();
-            this.activeTimers = this.activeTimers.filter(timer => timer.endsAt > now);
+            this.activeTimers = this.activeTimers.filter(timer => {
+                const remaining = timer.endsAt - now;
+
+                if (remaining <= 0) {
+                    // Timer has already expired - optionally fire immediate expiration
+                    console.log(`[Dailies] Timer expired: ${timer.label}`);
+                    return false; // Remove from active timers
+                }
+
+                // Re-establish the notification callback
+                this.scheduleTimerNotification(timer, remaining);
+                return true; // Keep timer
+            });
+
+            // Save cleaned up timers
+            if (savedTimers) {
+                this.saveTimers();
+            }
 
             // Check if notification banner was dismissed
             // Check if notification banner was dismissed
@@ -428,11 +445,8 @@ const DailiesApp = {
         this.saveTimers();
         this.renderActiveTimers();
 
-        // Set timeout for notification
-        setTimeout(() => {
-            this.sendNotification(`${game.name} - ${serverName}`, `Reset in ${minutesBefore} minutes! Complete your dailies!`);
-            this.removeTimer(timer.id);
-        }, delay);
+        // Set timeout for notification and store handle
+        this.scheduleTimerNotification(timer, delay);
 
         this.showToast(`Notification set for ${minutesBefore} min before reset`, 'success');
     },
@@ -461,11 +475,8 @@ const DailiesApp = {
         this.saveTimers();
         this.renderActiveTimers();
 
-        // Set timeout for notification
-        setTimeout(() => {
-            this.sendNotification('Timer Complete', `${label} - Your timer has ended!`);
-            this.removeTimer(timer.id);
-        }, totalMs);
+        // Set timeout for notification and store handle
+        this.scheduleTimerNotification(timer, totalMs);
 
         this.showToast(`Timer set for ${hours}h ${minutes}m`, 'success');
 
@@ -476,9 +487,39 @@ const DailiesApp = {
     },
 
     removeTimer(timerId) {
+        const timer = this.activeTimers.find(t => t.id === timerId);
+        if (timer && timer.timeoutHandle) {
+            clearTimeout(timer.timeoutHandle); // Clear the timeout callback
+        }
         this.activeTimers = this.activeTimers.filter(t => t.id !== timerId);
         this.saveTimers();
         this.renderActiveTimers();
+    },
+
+    // Schedule notification callback for a timer
+    scheduleTimerNotification(timer, delay) {
+        // Clear any existing timeout for this timer
+        if (timer.timeoutHandle) {
+            clearTimeout(timer.timeoutHandle);
+        }
+
+        // Schedule the notification
+        timer.timeoutHandle = setTimeout(() => {
+            // Determine notification content based on timer type
+            if (timer.isResetNotification) {
+                const game = this.getGameById(timer.gameId);
+                const minutesBefore = this.notifications[`${timer.gameId}:${timer.serverName}`]?.beforeReset || 0;
+                this.sendNotification(
+                    `${game?.name || 'Game'} - ${timer.serverName}`,
+                    `Reset in ${minutesBefore} minutes! Complete your dailies!`
+                );
+            } else {
+                this.sendNotification('Timer Complete', `${timer.label} - Your timer has ended!`);
+            }
+
+            // Remove timer after notification
+            this.removeTimer(timer.id);
+        }, delay);
     },
 
     sendNotification(title, body) {
@@ -823,7 +864,7 @@ const DailiesApp = {
             notifications: this.notifications,
             // Don't export active timers as they are time-sensitive
             exportedAt: new Date().toISOString(),
-            version: '1.3.0'
+            version: '1.4.0'
         };
 
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));

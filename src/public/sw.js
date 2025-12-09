@@ -12,6 +12,8 @@ const STATIC_ASSETS = [
     '/assets/logo.png',
     '/assets/favicon.ico',
     '/assets/images/banner.png',
+    '/assets/icons/icon-192x192.png',
+    '/assets/icons/icon-72x72.png',
     '/manifest.json'
 ];
 

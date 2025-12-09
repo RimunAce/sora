@@ -776,6 +776,7 @@ body {
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     min-height: 2.6em;
@@ -2320,548 +2321,548 @@ body {
 .games-container-wrapper {
     -webkit-overflow-scrolling: touch;
     overflow-clip-margin: touch;
+}
 
-    /* Skeleton Loading States */
-    .skeleton {
-        background: linear-gradient(90deg, #2a2e3a 25%, #3a3e4a 50%, #2a2e3a 75%);
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: 8px;
-        position: relative;
-        overflow: hidden;
+/* Skeleton Loading States */
+.skeleton {
+    background: linear-gradient(90deg, #2a2e3a 25%, #3a3e4a 50%, #2a2e3a 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-img {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.skeleton-title {
+    height: 1.5rem;
+    width: 70%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-description {
+    height: 0.875rem;
+    width: 90%;
+    margin-bottom: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200% 0;
     }
 
-    .skeleton-img {
-        width: 100%;
-        height: 200px;
-        border-radius: 8px;
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Performance optimizations for large datasets */
+.games-container {
+    contain: layout style paint;
+    will-change: transform;
+}
+
+.game-banner {
+    contain: layout style paint;
+    will-change: transform;
+}
+
+/* Image loading optimization */
+.game-banner-img {
+    contain: layout paint;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Virtual scrolling support */
+.virtual-scroll-container {
+    height: 400px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.virtual-scroll-item {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+}
+
+.virtual-scroll-spacer {
+    width: 100%;
+}
+
+/* Pagination styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0 1rem;
+}
+
+/* Cache status indicator */
+.cache-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cache-status.visible {
+    opacity: 1;
+}
+
+/* Performance metrics display */
+.performance-metrics {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    z-index: 1000;
+    max-width: 300px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.performance-metrics.visible {
+    opacity: 1;
+}
+
+.performance-metrics h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-color);
+}
+
+.performance-metric {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.performance-metric .label {
+    color: var(--text-secondary);
+}
+
+.performance-metric .value {
+    color: white;
+    font-weight: 600;
+}
+
+/* Optimize scroll performance */
+.games-container-wrapper {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Memory leak prevention */
+.server-card {
+    pointer-events: auto;
+}
+
+.server-card:hover {
+    pointer-events: auto;
+}
+
+/* Enhanced lazy loading feedback */
+.lazy-load-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-banner-img.lazy-load+.lazy-load-indicator {
+    opacity: 1;
+}
+
+/* Additional Accessibility & Touch Enhancements */
+
+/* Better focus management for interactive elements */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[tabindex]:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* ARIA live region for dynamic content */
+.aria-live {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Improved form elements for touch */
+.form-group input,
+.search-input,
+.timezone-search-input {
+    min-height: var(--touch-target-min);
+    touch-action: manipulation;
+}
+
+/* Better button styles for accessibility */
+.request-game-btn,
+.submit-request-btn {
+    min-height: var(--touch-target-min);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ensure sufficient color contrast for all text */
+.server-countdown {
+    /* Ensure contrast ratio of at least 4.5:1 */
+    color: #ff6b9d;
+    background: rgba(255, 107, 157, 0.1);
+    border: 1px solid rgba(255, 107, 157, 0.3);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Already dark theme, but can be enhanced */
+        --dark-bg: #0a0f1c;
+        --card-bg: #1a2332;
+    }
+}
+
+/* Light mode support */
+@media (prefers-color-scheme: light) {
+    :root {
+        --dark-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --border-color: #e2e8f0;
+        --card-hover: #f1f5f9;
     }
 
-    .skeleton-text {
-        height: 1rem;
-        margin-bottom: 0.5rem;
-        border-radius: 4px;
+    .hero::before {
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    }
+}
+
+/* Enhanced touch feedback for mobile devices */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Remove hover effects on touch devices */
+    .nav-link:hover,
+    .server-card-main:hover,
+    .footer-link:hover {
+        transform: none;
+        background: none;
     }
 
-    .skeleton-title {
-        height: 1.5rem;
-        width: 70%;
-        margin-bottom: 1rem;
+    /* Add active states for touch feedback */
+    .nav-link:active,
+    .server-card-main:active,
+    .footer-link:active,
+    .request-game-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
     }
+}
 
-    .skeleton-description {
-        height: 0.875rem;
-        width: 90%;
-        margin-bottom: 0.5rem;
-    }
+/* No Results Container */
+.no-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    min-height: 400px;
+    width: 100%;
+    margin: 0 auto;
+    user-select: none;
+    /* Prevent selection of text and icon */
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE/Edge */
+    pointer-events: none;
+    /* Prevent any interaction */
 
-    @keyframes skeleton-loading {
-        0% {
-            background-position: -200% 0;
-        }
+    /* Counter-rotate because wrapper is rotateX(180deg) */
+    transform: rotateX(180deg);
+}
 
-        100% {
-            background-position: 200% 0;
-        }
-    }
+/* Override games-container styles when showing no results */
+.games-container.no-results-state {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    gap: 0;
+}
 
-    /* Performance optimizations for large datasets */
-    .games-container {
-        contain: layout style paint;
-        will-change: transform;
-    }
+.no-results-icon {
+    margin-bottom: 1rem;
+    opacity: 0.8;
+    animation: gentle-bounce 2s ease-in-out infinite;
+}
 
-    .game-banner {
-        contain: layout style paint;
-        will-change: transform;
-    }
+.no-results-icon i {
+    font-size: clamp(3rem, 8vw, 5rem);
+    color: var(--text-secondary);
+}
 
-    /* Image loading optimization */
-    .game-banner-img {
-        contain: layout paint;
-        image-rendering: -webkit-optimize-contrast;
-    }
+.no-results-text {
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    color: var(--text-secondary);
+    font-weight: 500;
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+}
 
-    /* Virtual scrolling support */
-    .virtual-scroll-container {
-        height: 400px;
-        overflow-y: auto;
-        position: relative;
-    }
+@keyframes gentle-bounce {
 
-    .virtual-scroll-item {
-        position: absolute;
-        width: 100%;
-        height: 80px;
+    0%,
+    100% {
         transform: translateY(0);
-        transition: transform 0.2s ease;
     }
 
-    .virtual-scroll-spacer {
-        width: 100%;
+    50% {
+        transform: translateY(-10px);
     }
+}
 
-    /* Pagination styles */
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 2rem 0;
-        padding: 1rem;
-    }
-
-    .pagination-btn {
-        padding: 0.5rem 1rem;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-    }
-
-    .pagination-btn:hover:not(:disabled) {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-    }
-
-    .pagination-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .pagination-btn.active {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-    }
-
-    .pagination-info {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        margin: 0 1rem;
-    }
-
-    /* Cache status indicator */
-    .cache-status {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .cache-status.visible {
-        opacity: 1;
-    }
-
-    /* Performance metrics display */
-    .performance-metrics {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 1rem;
-        border-radius: 8px;
-        font-family: monospace;
-        font-size: 0.8rem;
-        z-index: 1000;
-        max-width: 300px;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .performance-metrics.visible {
-        opacity: 1;
-    }
-
-    .performance-metrics h4 {
-        margin: 0 0 0.5rem 0;
-        color: var(--primary-color);
-    }
-
-    .performance-metric {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 0.25rem;
-    }
-
-    .performance-metric .label {
-        color: var(--text-secondary);
-    }
-
-    .performance-metric .value {
-        color: white;
-        font-weight: 600;
-    }
-
-    /* Optimize scroll performance */
-    .games-container-wrapper {
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-    }
-
-    /* Memory leak prevention */
-    .server-card {
-        pointer-events: auto;
-    }
-
-    .server-card:hover {
-        pointer-events: auto;
-    }
-
-    /* Enhanced lazy loading feedback */
-    .lazy-load-indicator {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .game-banner-img.lazy-load+.lazy-load-indicator {
-        opacity: 1;
-    }
-
-    /* Additional Accessibility & Touch Enhancements */
-
-    /* Better focus management for interactive elements */
-    button:focus,
-    input:focus,
-    select:focus,
-    textarea:focus,
-    [tabindex]:focus {
-        outline: 2px solid var(--primary-color);
-        outline-offset: 2px;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-    }
-
-    /* ARIA live region for dynamic content */
-    .aria-live {
-        position: absolute;
-        left: -10000px;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-    }
-
-    /* Improved form elements for touch */
-    .form-group input,
-    .search-input,
-    .timezone-search-input {
-        min-height: var(--touch-target-min);
-        touch-action: manipulation;
-    }
-
-    /* Better button styles for accessibility */
-    .request-game-btn,
-    .submit-request-btn {
-        min-height: var(--touch-target-min);
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Ensure sufficient color contrast for all text */
-    .server-countdown {
-        /* Ensure contrast ratio of at least 4.5:1 */
-        color: #ff6b9d;
-        background: rgba(255, 107, 157, 0.1);
-        border: 1px solid rgba(255, 107, 157, 0.3);
-    }
-
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            /* Already dark theme, but can be enhanced */
-            --dark-bg: #0a0f1c;
-            --card-bg: #1a2332;
-        }
-    }
-
-    /* Light mode support */
-    @media (prefers-color-scheme: light) {
-        :root {
-            --dark-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --border-color: #e2e8f0;
-            --card-hover: #f1f5f9;
-        }
-
-        .hero::before {
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
-        }
-    }
-
-    /* Enhanced touch feedback for mobile devices */
-    @media (hover: none) and (pointer: coarse) {
-
-        /* Remove hover effects on touch devices */
-        .nav-link:hover,
-        .server-card-main:hover,
-        .footer-link:hover {
-            transform: none;
-            background: none;
-        }
-
-        /* Add active states for touch feedback */
-        .nav-link:active,
-        .server-card-main:active,
-        .footer-link:active,
-        .request-game-btn:active {
-            transform: scale(0.95);
-            transition: transform 0.1s ease;
-        }
-    }
-
-    /* No Results Container */
+/* Responsive adjustments for no results */
+@media (max-width: 768px) {
     .no-results-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 4rem 2rem;
-        text-align: center;
-        min-height: 400px;
-        width: 100%;
-        margin: 0 auto;
-        user-select: none;
-        /* Prevent selection of text and icon */
-        -webkit-user-select: none;
-        /* Safari */
-        -moz-user-select: none;
-        /* Firefox */
-        -ms-user-select: none;
-        /* IE/Edge */
-        pointer-events: none;
-        /* Prevent any interaction */
-
-        /* Counter-rotate because wrapper is rotateX(180deg) */
-        transform: rotateX(180deg);
-    }
-
-    /* Override games-container styles when showing no results */
-    .games-container.no-results-state {
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-        gap: 0;
-    }
-
-    .no-results-icon {
-        margin-bottom: 1rem;
-        opacity: 0.8;
-        animation: gentle-bounce 2s ease-in-out infinite;
+        padding: 3rem 1rem;
+        min-height: 250px;
     }
 
     .no-results-icon i {
-        font-size: clamp(3rem, 8vw, 5rem);
-        color: var(--text-secondary);
+        font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .no-results-icon {
+        margin-bottom: 0.75rem;
     }
 
     .no-results-text {
-        font-size: clamp(1rem, 3vw, 1.25rem);
-        color: var(--text-secondary);
-        font-weight: 500;
-        opacity: 0.7;
-        letter-spacing: 0.02em;
+        font-size: clamp(0.9rem, 4vw, 1.1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .no-results-container {
+        padding: 2rem 1rem;
+        min-height: 200px;
     }
 
-    @keyframes gentle-bounce {
-
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-10px);
-        }
+    .no-results-icon i {
+        font-size: clamp(2rem, 12vw, 3rem);
     }
 
-    /* Responsive adjustments for no results */
-    @media (max-width: 768px) {
-        .no-results-container {
-            padding: 3rem 1rem;
-            min-height: 250px;
-        }
-
-        .no-results-icon i {
-            font-size: clamp(2.5rem, 10vw, 4rem);
-        }
-
-        .no-results-icon {
-            margin-bottom: 0.75rem;
-        }
-
-        .no-results-text {
-            font-size: clamp(0.9rem, 4vw, 1.1rem);
-        }
+    .no-results-icon {
+        margin-bottom: 0.5rem;
     }
 
-    @media (max-width: 480px) {
-        .no-results-container {
-            padding: 2rem 1rem;
-            min-height: 200px;
-        }
+    .no-results-text {
+        font-size: clamp(0.85rem, 5vw, 1rem);
+    }
+}
 
-        .no-results-icon i {
-            font-size: clamp(2rem, 12vw, 3rem);
-        }
 
-        .no-results-icon {
-            margin-bottom: 0.5rem;
-        }
+.favorite-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(239, 68, 68, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
 
-        .no-results-text {
-            font-size: clamp(0.85rem, 5vw, 1rem);
-        }
+.favorite-card:hover .favorite-remove {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.favorite-remove:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+}
+
+/* Star Toggle Button */
+.game-banner-image-wrapper {
+    position: relative;
+}
+
+.star-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.star-toggle:hover {
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--warning);
+    transform: scale(1.1);
+}
+
+.star-toggle.favorited {
+    color: var(--warning);
+    background: rgba(245, 158, 11, 0.2);
+}
+
+.star-toggle.favorited:hover {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive adjustments for favorites */
+@media (max-width: 768px) {
+    .favorites-section {
+        padding: 0 var(--spacing-md);
     }
 
-
-    .favorite-remove {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        background: rgba(239, 68, 68, 0.9);
-        border: none;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: white;
-        font-size: 0.75rem;
-        transition: all 0.3s ease;
-        opacity: 0;
-        transform: scale(0.8);
+    .favorites-container {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
     }
 
-    .favorite-card:hover .favorite-remove {
-        opacity: 1;
-        transform: scale(1);
+    .favorite-card {
+        min-height: 120px;
     }
 
-    .favorite-remove:hover {
-        background: #ef4444;
-        transform: scale(1.1);
+    .favorite-card-img {
+        height: 70px;
     }
 
-    /* Star Toggle Button */
-    .game-banner-image-wrapper {
-        position: relative;
+    .favorite-card-name {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs);
     }
 
     .star-toggle {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(10px);
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        color: var(--text-muted);
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        z-index: 10;
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .favorites-section {
+        padding: 0 var(--spacing-sm);
     }
 
-    .star-toggle:hover {
-        background: rgba(15, 23, 42, 0.9);
-        color: var(--warning);
-        transform: scale(1.1);
+    .favorites-container {
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: var(--spacing-xs);
     }
 
-    .star-toggle.favorited {
-        color: var(--warning);
-        background: rgba(245, 158, 11, 0.2);
+    .favorite-card {
+        min-height: 110px;
     }
 
-    .star-toggle.favorited:hover {
-        background: rgba(245, 158, 11, 0.3);
+    .favorite-card-img {
+        height: 60px;
     }
 
-    /* Responsive adjustments for favorites */
-    @media (max-width: 768px) {
-        .favorites-section {
-            padding: 0 var(--spacing-md);
-        }
-
-        .favorites-container {
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm);
-        }
-
-        .favorite-card {
-            min-height: 120px;
-        }
-
-        .favorite-card-img {
-            height: 70px;
-        }
-
-        .favorite-card-name {
-            font-size: var(--font-size-xs);
-            padding: var(--spacing-xs);
-        }
-
-        .star-toggle {
-            width: 28px;
-            height: 28px;
-            font-size: 0.75rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .favorites-section {
-            padding: 0 var(--spacing-sm);
-        }
-
-        .favorites-container {
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-            gap: var(--spacing-xs);
-        }
-
-        .favorite-card {
-            min-height: 110px;
-        }
-
-        .favorite-card-img {
-            height: 60px;
-        }
-
-        .favorite-remove {
-            width: 20px;
-            height: 20px;
-            font-size: 0.625rem;
-            opacity: 1;
-            transform: scale(1);
-        }
+    .favorite-remove {
+        width: 20px;
+        height: 20px;
+        font-size: 0.625rem;
+        opacity: 1;
+        transform: scale(1);
     }
 }
 

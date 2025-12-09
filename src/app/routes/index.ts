@@ -148,7 +148,7 @@ export const registerRoutes = (app: App): void => {
   // Keep the old simple root endpoint for fallback
   app.get('/simple', (req, res) => {
     logger.info('Simple root endpoint accessed')
-    res.send('<h1>Hello World from Sora v1.0.0</h1>')
+    res.send('<h1>Hello World from Sora v1.4.0</h1>')
   })
 
   app.get('/page/:page', (req, res) => {

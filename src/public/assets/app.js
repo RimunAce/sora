@@ -336,9 +336,12 @@ const App = {
             }
 
             // Import timezone
-            if (config.timezone) {
-                this.selectedTimezone = config.timezone;
-                localStorage.setItem('sora_timezone', config.timezone);
+            // Accept null/undefined to mean auto (clearing explicit timezone)
+            if (config.hasOwnProperty('timezone')) {
+                const tz = config.timezone;
+                this.selectedTimezone = (tz === null || tz === undefined || tz === 'auto') ? null : tz;
+                this.saveTimezone(this.selectedTimezone);
+                this.updateTimezoneDisplay(); // Update selector label immediately
             }
 
             // Import favorite server visibility
@@ -1937,7 +1940,20 @@ const App = {
 
     // Load saved timezone from localStorage
     loadSavedTimezone() {
-        const saved = localStorage.getItem('selectedTimezone');
+        // Try modern key first
+        let saved = localStorage.getItem('selectedTimezone');
+
+        // Backward compatibility: fallback to legacy 'sora_timezone' key
+        if (!saved) {
+            const legacy = localStorage.getItem('sora_timezone');
+            if (legacy) {
+                saved = legacy;
+                // Migrate to new key
+                this.saveTimezone(legacy);
+                localStorage.removeItem('sora_timezone');
+            }
+        }
+
         if (saved && saved !== 'auto') {
             this.selectedTimezone = saved;
             this.updateTimezoneDisplay();

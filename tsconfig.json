@@ -6,10 +6,10 @@
       "ES2020"
     ],
     "types": [
-      "bun-types"
+      "bun"
     ],
     "outDir": "./dist",
-    "rootDir": ".",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -27,11 +27,11 @@
     "exactOptionalPropertyTypes": false
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "tests"
   ]
 }
