@@ -215,7 +215,7 @@ export const registerRoutes = (app: App): void => {
     logger.infoContext('API status requested', { userAgent })
     res.json({
       service: 'Sora',
-      version: '1.0.0',
+      version: '1.4.0',
       status: 'operational',
       timestamp: new Date().toISOString()
     })
