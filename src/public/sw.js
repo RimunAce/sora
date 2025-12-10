@@ -1,7 +1,7 @@
 // Sora Service Worker v1.0.0
 // Handles caching for offline support and performance optimization
 
-const CACHE_NAME = 'sora-cache-v2';
+const CACHE_NAME = 'sora-cache-v3';
 const STATIC_ASSETS = [
     '/',
     '/dashboard',
@@ -146,7 +146,37 @@ async function fetchAndCache(request) {
 
 // Cache-first strategy for CDN resources (Font Awesome, etc.)
 async function cacheFirstCDN(request) {
+    const url = new URL(request.url);
+    const isWebfont = url.pathname.match(/\.(woff2?|ttf|eot|otf)$/i);
+
     try {
+        // For webfont files, prefer network to avoid corrupted cached fonts
+        if (isWebfont) {
+            try {
+                const networkResponse = await fetch(request, { mode: 'cors' });
+
+                // Validate the response before caching
+                if (networkResponse.ok && networkResponse.headers.get('content-type')) {
+                    const cache = await caches.open(CACHE_NAME);
+                    cache.put(request, networkResponse.clone());
+                    return networkResponse;
+                }
+            } catch (networkError) {
+                // Network failed, try cache as fallback
+                console.log('[SW] Font network failed, trying cache:', request.url);
+            }
+
+            // Fallback to cache for fonts if network fails
+            const cachedResponse = await caches.match(request);
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+
+            // Return empty response if both fail
+            return new Response('', { status: 503, statusText: 'Font unavailable' });
+        }
+
+        // For CSS and other non-font files, use cache-first
         const cachedResponse = await caches.match(request);
 
         if (cachedResponse) {
