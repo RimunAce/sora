@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "build": "bun build src/public/assets/app.js --outdir=dist --minify --sourcemap --metafile-md=meta.md",
+    "build": "tsc && bun build src/public/assets/app.js --outdir=dist/public/assets --minify --sourcemap --metafile-md=meta.md && xcopy \"src\\public\" \"dist\\public\" /E /I /Y /Q",
     "start": "bun run dist/index.js",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
