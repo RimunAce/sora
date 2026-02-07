@@ -481,3 +481,17 @@ games:
         timezone: UTC
         offset: 0
         dailyReset: "00:00"
+
+  - id: arknights-endfield
+    name: "Arknights: Endfield"
+    description: Sequel to Arknights set in a new Planet (Moon). The Factory Must Grow
+    banner: /assets/images/games/1200px-Arknights_Endfield_Cover_Art.webp
+    servers:
+      - name: Asia
+        timezone: UTC+8
+        offset: 8
+        dailyReset: "04:00"
+      - name: America / Europe
+        timezone: UTC-5
+        offset: -5
+        dailyReset: "04:00"

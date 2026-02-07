@@ -2318,40 +2318,49 @@ const App = {
     initPerformanceMonitoring() {
         // Monitor Core Web Vitals if supported
         if ('PerformanceObserver' in window) {
+            // Check which entry types are supported
+            const supportedEntryTypes = PerformanceObserver.supportedEntryTypes || [];
+
             try {
                 // Monitor Largest Contentful Paint
-                const lcpObserver = new PerformanceObserver((list) => {
-                    const entries = list.getEntries();
-                    const lastEntry = entries[entries.length - 1];
-                    if (lastEntry) {
-                        this.logPerformance('LCP', lastEntry.startTime);
-                    }
-                });
-                lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-
-                // Monitor First Input Delay
-                const fidObserver = new PerformanceObserver((list) => {
-                    const entries = list.getEntries();
-                    entries.forEach(entry => {
-                        this.logPerformance('FID', entry.processingStart - entry.startTime);
-                    });
-                });
-                fidObserver.observe({ entryTypes: ['first-input'] });
-
-                // Monitor Cumulative Layout Shift
-                const clsObserver = new PerformanceObserver((list) => {
-                    let clsValue = 0;
-                    const entries = list.getEntries();
-                    entries.forEach(entry => {
-                        if (!entry.hadRecentInput) {
-                            clsValue += entry.value;
+                if (supportedEntryTypes.includes('largest-contentful-paint')) {
+                    const lcpObserver = new PerformanceObserver((list) => {
+                        const entries = list.getEntries();
+                        const lastEntry = entries[entries.length - 1];
+                        if (lastEntry) {
+                            this.logPerformance('LCP', lastEntry.startTime);
                         }
                     });
-                    if (clsValue > 0) {
-                        this.logPerformance('CLS', clsValue);
-                    }
-                });
-                clsObserver.observe({ entryTypes: ['layout-shift'] });
+                    lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+                }
+
+                // Monitor First Input Delay
+                if (supportedEntryTypes.includes('first-input')) {
+                    const fidObserver = new PerformanceObserver((list) => {
+                        const entries = list.getEntries();
+                        entries.forEach(entry => {
+                            this.logPerformance('FID', entry.processingStart - entry.startTime);
+                        });
+                    });
+                    fidObserver.observe({ entryTypes: ['first-input'] });
+                }
+
+                // Monitor Cumulative Layout Shift (not supported in all browsers)
+                if (supportedEntryTypes.includes('layout-shift')) {
+                    const clsObserver = new PerformanceObserver((list) => {
+                        let clsValue = 0;
+                        const entries = list.getEntries();
+                        entries.forEach(entry => {
+                            if (!entry.hadRecentInput) {
+                                clsValue += entry.value;
+                            }
+                        });
+                        if (clsValue > 0) {
+                            this.logPerformance('CLS', clsValue);
+                        }
+                    });
+                    clsObserver.observe({ entryTypes: ['layout-shift'] });
+                }
             } catch (error) {
                 console.warn('Performance monitoring not fully supported:', error);
             }
