@@ -5,9 +5,10 @@ import { join, extname } from 'path'
 import { loadGamesData, getGameById } from '../../core/data/gamesLoader'
 
 // Static file paths - support both src/ (dev) and dist/public/ (prod)
-const DIST_PUBLIC_DIR = join(process.cwd(), 'dist', 'public')
+// Check src/public first (dev mode), then fall back to dist/public (production build)
 const SRC_PUBLIC_DIR = join(process.cwd(), 'src', 'public')
-const PUBLIC_DIR = existsSync(DIST_PUBLIC_DIR) ? DIST_PUBLIC_DIR : SRC_PUBLIC_DIR
+const DIST_PUBLIC_DIR = join(process.cwd(), 'dist', 'public')
+const PUBLIC_DIR = existsSync(SRC_PUBLIC_DIR) ? SRC_PUBLIC_DIR : DIST_PUBLIC_DIR
 
 const HTML_FILE = join(PUBLIC_DIR, 'index.html')
 const DASHBOARD_HTML_FILE = join(PUBLIC_DIR, 'dashboard.html')
