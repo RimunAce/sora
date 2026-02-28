@@ -15,7 +15,7 @@ games:
   - id: genshin-impact
     name: Genshin Impact
     description: Open-world action RPG
-    banner: /assets/images/games/genshin-impact.jpg
+    banner: /assets/images/games/genshin-impact.webp
     servers:
       - name: America
         timezone: UTC-5
@@ -37,7 +37,7 @@ games:
   - id: honkai-star-rail
     name: "Honkai: Star Rail"
     description: Space fantasy RPG
-    banner: /assets/images/games/honkai-star-rail.jpg
+    banner: /assets/images/games/honkai-star-rail.webp
     servers:
       - name: America
         timezone: UTC-5
@@ -59,7 +59,7 @@ games:
   - id: zenless-zone-zero
     name: Zenless Zone Zero
     description: Urban fantasy action RPG
-    banner: /assets/images/games/zenless-zone-zero.jpg
+    banner: /assets/images/games/zenless-zone-zero.webp
     servers:
       - name: America
         timezone: UTC-5
@@ -117,7 +117,7 @@ games:
   - id: arknights
     name: Arknights
     description: Tower defense strategy RPG by Hypergryph
-    banner: /assets/images/games/arknights.jpg
+    banner: /assets/images/games/arknights.webp
     servers:
       - name: EN (Global)
         timezone: UTC-7
@@ -163,7 +163,7 @@ games:
   - id: umamusume-pretty-derby
     name: "Umamusume: Pretty Derby"
     description: Racing RPG featuring anthropomorphic horse girls in a gacha system
-    banner: /assets/images/games/umamusume-pretty-derby.jpg
+    banner: /assets/images/games/umamusume-pretty-derby.webp
     servers:
       - name: JP
         timezone: JST
@@ -177,7 +177,7 @@ games:
   - id: wuthering-waves
     name: Wuthering Waves
     description: Open-world action RPG with gacha elements and combat system
-    banner: /assets/images/games/wuthering-waves.jpg
+    banner: /assets/images/games/wuthering-waves.webp
     servers:
       - name: Asia
         timezone: UTC+8
@@ -203,7 +203,7 @@ games:
   - id: guardian-tales
     name: Guardian Tales
     description: Action adventure RPG with pixel art and puzzle elements
-    banner: /assets/images/games/guardian-tales.jpg
+    banner: /assets/images/games/guardian-tales.webp
     servers:
       - name: Asia
         timezone: UTC+8
@@ -229,7 +229,7 @@ games:
   - id: azur-lane
     name: Azur Lane
     description: Side-scrolling naval combat RPG featuring shipgirls
-    banner: /assets/images/games/azur-lane.jpg
+    banner: /assets/images/games/azur-lane.webp
     servers:
       - name: EN
         timezone: UTC-7
@@ -261,7 +261,7 @@ games:
   - id: punishing-gray-raven
     name: "Punishing: Gray Raven"
     description: Action RPG with anime-style combat system and character collection
-    banner: /assets/images/games/punishing-gray-raven.jpg
+    banner: /assets/images/games/punishing-gray-raven.webp
     servers:
       - name: Global
         timezone: UTC
@@ -289,7 +289,7 @@ games:
   - id: snowbreak-containment-zone
     name: "Snowbreak: Containment Zone"
     description: 3D action RPG with harem romance elements and tactical combat
-    banner: /assets/images/games/snowbreak-containment-zone.jpg
+    banner: /assets/images/games/snowbreak-containment-zone.webp
     servers:
       - name: Global
         timezone: UTC-8
@@ -299,7 +299,7 @@ games:
   - id: tower-of-fantasy
     name: Tower of Fantasy
     description: Open-world MMORPG with sci-fi and fantasy elements
-    banner: /assets/images/games/tower-of-fantasy.jpg
+    banner: /assets/images/games/tower-of-fantasy.webp
     servers:
       - name: Global
         timezone: EDT
@@ -319,7 +319,7 @@ games:
   - id: project-sekai
     name: "Project SEKAI COLORFUL STAGE!"
     description: Rhythm game featuring Hatsune Miku and virtual singers
-    banner: /assets/images/games/project-sekai.jpg
+    banner: /assets/images/games/project-sekai.webp
     servers:
       - name: Japan
         timezone: JST
@@ -333,7 +333,7 @@ games:
   - id: aether-gazer
     name: Aether Gazer
     description: Action RPG with deep combat system
-    banner: /assets/images/games/aether-gazer.jpg
+    banner: /assets/images/games/aether-gazer.webp
     servers:
       - name: Global
         timezone: UTC
@@ -343,7 +343,7 @@ games:
   - id: reverse-1999
     name: "Reverse: 1999"
     description: Time-travel RPG with unique card-based combat system
-    banner: /assets/images/games/reverse-1999.jpg
+    banner: /assets/images/games/reverse-1999.webp
     servers:
       - name: Global
         timezone: UTC-5
@@ -353,7 +353,7 @@ games:
   - id: limbus-company
     name: "Limbus Company"
     description: RPG adventure featuring 12 Sinners in a dystopian world
-    banner: /assets/images/games/limbus-company.jpg
+    banner: /assets/images/games/limbus-company.webp
     servers:
       - name: Global
         timezone: KST
@@ -363,7 +363,7 @@ games:
   - id: blue-archive
     name: Blue Archive
     description: Youth X Academy X Military RPG
-    banner: /assets/images/games/blue-archive.jpg
+    banner: /assets/images/games/blue-archive.webp
     servers:
       - name: Global
         timezone: UTC
@@ -381,7 +381,7 @@ games:
   - id: overfield
     name: OverField
     description: Chibi-style casual gacha RPG with cute dessert-themed rewards
-    banner: /assets/images/games/overfield.jpg
+    banner: /assets/images/games/overfield.webp
     servers:
       - name: Global
         timezone: UTC+8
@@ -391,7 +391,7 @@ games:
   - id: duet-night-abyss
     name: Duet Night Abyss
     description: High-freedom fantasy adventure RPG
-    banner: /assets/images/games/duetnightabyss.jpg
+    banner: /assets/images/games/duetnightabyss.webp
     servers:
       - name: America
         timezone: UTC-5
@@ -427,7 +427,7 @@ games:
   - id: echocalypse
     name: "Echocalypse: The Scarlet Covenant"
     description: Post-apocalyptic sci-fi mobile strategy RPG
-    banner: /assets/images/games/echocalypse.jpg
+    banner: /assets/images/games/echocalypse.webp
     servers:
       - name: EN
         timezone: UTC+8
@@ -437,7 +437,7 @@ games:
   - id: granblue-fantasy
     name: Granblue Fantasy
     description: Classic turn-based JRPG
-    banner: /assets/images/games/gbf.jpg
+    banner: /assets/images/games/gbf.webp
     servers:
       - name: WEB
         timezone: JST
@@ -447,7 +447,7 @@ games:
   - id: heaven-burns-red
     name: Heaven Burns Red
     description: Dramatic RPG with a deep, emotional story
-    banner: /assets/images/games/hbr.jpg
+    banner: /assets/images/games/hbr.webp
     servers:
       - name: Global
         timezone: UTC-7
@@ -475,7 +475,7 @@ games:
   - id: afk-journey
     name: AFK Journey
     description: Ethereal fantasy RPG with open-world exploration
-    banner: /assets/images/games/afk-journey.jpg
+    banner: /assets/images/games/afk-journey.webp
     servers:
       - name: Global
         timezone: UTC
@@ -495,3 +495,17 @@ games:
         timezone: UTC-5
         offset: -5
         dailyReset: "04:00"
+
+  - id: banG-dream-girls-band-party
+    name: "BanG Dream! Girls Band Party!"
+    description: Free-to-play mobile rhythm game (Android/iOS)
+    banner: /assets/images/games/bangdream.webp
+    servers:
+      - name: JP
+        timezone: JST
+        offset: 9
+        dailyReset: "04:00"
+      - name: EN
+        timezone: UTC
+        offset: 0
+        dailyReset: "08:00"

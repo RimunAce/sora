@@ -870,7 +870,7 @@ const DailiesApp = {
             notifications: this.notifications,
             // Don't export active timers as they are time-sensitive
             exportedAt: new Date().toISOString(),
-            version: '1.4.0'
+            version: '1.5.0'
         };
 
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));

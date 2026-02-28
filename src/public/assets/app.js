@@ -178,6 +178,58 @@ const App = {
             settingsBtn.addEventListener('click', () => this.openSettingsModal());
         }
 
+        // Share site button (footer) - now an anchor tag
+        const shareBtn = document.getElementById('share-site-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.openShareModal();
+            });
+        }
+
+        // Close share modal
+        const closeShareBtn = document.getElementById('close-share-modal');
+        if (closeShareBtn) {
+            closeShareBtn.addEventListener('click', () => this.closeShareModal());
+        }
+
+        // Close share modal on backdrop click
+        const shareModal = document.getElementById('share-modal');
+        if (shareModal) {
+            shareModal.addEventListener('click', (e) => {
+                if (e.target.classList.contains('share-modal-backdrop')) {
+                    this.closeShareModal();
+                }
+            });
+        }
+
+        // Social share buttons
+        const shareTwitter = document.getElementById('share-twitter');
+        if (shareTwitter) {
+            shareTwitter.addEventListener('click', () => this.shareToTwitter());
+        }
+
+        const shareReddit = document.getElementById('share-reddit');
+        if (shareReddit) {
+            shareReddit.addEventListener('click', () => this.shareToReddit());
+        }
+
+        const shareDiscord = document.getElementById('share-discord');
+        if (shareDiscord) {
+            shareDiscord.addEventListener('click', () => this.shareToDiscord());
+        }
+
+        const shareWhatsapp = document.getElementById('share-whatsapp');
+        if (shareWhatsapp) {
+            shareWhatsapp.addEventListener('click', () => this.shareToWhatsapp());
+        }
+
+        // Copy link button
+        const copyLinkBtn = document.getElementById('copy-link-btn');
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener('click', () => this.copyShareLink());
+        }
+
         // Close settings modal
         const closeBtn = document.getElementById('close-settings-modal');
         if (closeBtn) {
@@ -251,6 +303,85 @@ const App = {
         const modal = document.getElementById('settings-modal');
         if (modal) {
             modal.classList.add('hidden');
+        }
+    },
+
+    // Open share modal
+    openShareModal() {
+        const modal = document.getElementById('share-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    },
+
+    // Close share modal
+    closeShareModal() {
+        const modal = document.getElementById('share-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            // Hide success message
+            const successMsg = document.getElementById('copy-success-message');
+            if (successMsg) {
+                successMsg.classList.add('hidden');
+            }
+        }
+    },
+
+    // Share to Twitter
+    shareToTwitter() {
+        const text = encodeURIComponent("Check out Sora - Track daily reset times for your favorite gacha games! Never miss your dailies again!");
+        const url = encodeURIComponent("https://sora-time.xyz/");
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+        window.open(twitterUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+    },
+
+    // Share to Reddit
+    shareToReddit() {
+        const title = encodeURIComponent("Sora - Gacha Game Reset Time Tracker");
+        const url = encodeURIComponent("https://sora-time.xyz/");
+        const redditUrl = `https://www.reddit.com/submit?title=${title}&url=${url}`;
+        window.open(redditUrl, '_blank', 'noopener,noreferrer,width=800,height=600');
+    },
+
+    // Share to Discord
+    shareToDiscord() {
+        // Discord doesn't have a direct share URL, so we copy the link instead
+        this.copyShareLink();
+        this.showNotification('Link copied! Paste it in Discord to share.', 'success');
+    },
+
+    // Share to WhatsApp
+    shareToWhatsapp() {
+        const text = encodeURIComponent("Check out Sora - Track daily reset times for your favorite gacha games! Never miss your dailies again! https://sora-time.xyz/");
+        const whatsappUrl = `https://wa.me/?text=${text}`;
+        window.open(whatsappUrl, '_blank', 'noopener,noreferrer,width=600,height=400');
+    },
+
+    // Copy share link to clipboard
+    async copyShareLink() {
+        const urlInput = document.getElementById('share-url-input');
+        const successMsg = document.getElementById('copy-success-message');
+        
+        try {
+            await navigator.clipboard.writeText('https://sora-time.xyz/');
+            if (successMsg) {
+                successMsg.classList.remove('hidden');
+                setTimeout(() => {
+                    successMsg.classList.add('hidden');
+                }, 2000);
+            }
+        } catch (error) {
+            // Fallback for older browsers
+            if (urlInput) {
+                urlInput.select();
+                document.execCommand('copy');
+                if (successMsg) {
+                    successMsg.classList.remove('hidden');
+                    setTimeout(() => {
+                        successMsg.classList.add('hidden');
+                    }, 2000);
+                }
+            }
         }
     },
 
@@ -876,13 +1007,22 @@ const App = {
         const bannerImageWrapper = document.createElement('div');
         bannerImageWrapper.className = 'game-banner-image-wrapper';
 
-        // Create image element with lazy loading
+        // Create image element with lazy loading and srcset for responsive images
         const img = document.createElement('img');
         img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjUyNTI1Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPjIwMHgxMjU8L3RleHQ+PC9zdmc+';
         img.setAttribute('data-src', game.banner);
+        // Add srcset for responsive images (browser will choose appropriate size)
+        // Using the same image but with different density descriptors for better mobile performance
+        img.setAttribute('srcset', `
+            ${game.banner.replace('.webp', '-small.webp')} 480w,
+            ${game.banner.replace('.webp', '-medium.webp')} 768w,
+            ${game.banner} 1200w
+        `.trim());
+        img.setAttribute('sizes', '(max-width: 480px) 480px, (max-width: 768px) 768px, 1200px');
         img.setAttribute('alt', `${game.name} Banner`);
         img.className = 'game-banner-img lazy-load';
         img.setAttribute('loading', 'lazy');
+        img.setAttribute('fetchpriority', 'low');
 
         // Create star toggle button
         const starButton = document.createElement('button');
@@ -951,8 +1091,8 @@ const App = {
         // Clear existing favorites
         favoritesContainer.innerHTML = '';
 
-        // If no favorites, hide the section
-        if (this.favoriteGames.length === 0) {
+        // If no favorites or games not loaded yet, hide the section
+        if (this.favoriteGames.length === 0 || !this.games || this.games.length === 0) {
             favoritesSection.style.display = 'none';
             return;
         }
@@ -1063,11 +1203,34 @@ const App = {
 
         // Make card clickable to show detail modal
         card.style.cursor = 'pointer';
-        card.onclick = (e) => {
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `View details for ${game.name}`);
+        
+        // Store game ID on the card for easy access
+        card.dataset.gameId = game.id;
+        
+        // Click handler - use addEventListener for better reliability
+        card.addEventListener('click', (e) => {
             // Don't open modal if clicking remove button
             if (e.target.closest('.favorite-remove')) return;
-            this.openFavoriteDetailModal(game);
-        };
+            // Re-find the game to ensure we have latest data
+            const currentGame = this.games.find(g => g.id === game.id);
+            if (currentGame) {
+                this.openFavoriteDetailModal(currentGame);
+            }
+        });
+        
+        // Keyboard handler for accessibility
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const currentGame = this.games.find(g => g.id === game.id);
+                if (currentGame) {
+                    this.openFavoriteDetailModal(currentGame);
+                }
+            }
+        });
 
         card.appendChild(img);
         card.appendChild(gameName);
@@ -1079,7 +1242,7 @@ const App = {
     // Open favorite game detail modal
     openFavoriteDetailModal(game) {
         const modal = document.getElementById('favorite-detail-modal');
-        const title = document.getElementById('favorite-detail-title');
+        const title = document.getElementById('favorite-detail-dialog-title');
         const body = document.getElementById('favorite-detail-body');
 
         if (!modal || !title || !body) return;
@@ -1095,11 +1258,16 @@ const App = {
         // Clear previous content
         body.innerHTML = '';
 
-        // Create server cards with persisted visibility
-        game.servers.forEach(server => {
-            const serverCard = this.createFavoriteDetailServerCard(game, server);
-            body.appendChild(serverCard);
-        });
+        // Check if game has servers
+        if (!game.servers || game.servers.length === 0) {
+            body.innerHTML = '<p>No servers available for this game.</p>';
+        } else {
+            // Create server cards with persisted visibility
+            game.servers.forEach(server => {
+                const serverCard = this.createFavoriteDetailServerCard(game, server);
+                body.appendChild(serverCard);
+            });
+        }
 
         // Show modal instantly (no animation)
         modal.classList.remove('hidden');

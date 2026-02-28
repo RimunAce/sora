@@ -1,6 +1,6 @@
 import type { App } from '@tinyhttp/app'
 import { logger } from '../../core/logger'
-import { readFileSync, existsSync } from 'fs'
+import { readFileSync, existsSync, writeFileSync } from 'fs'
 import { join, extname } from 'path'
 import { loadGamesData, getGameById } from '../../core/data/gamesLoader'
 
@@ -11,6 +11,7 @@ const PUBLIC_DIR = existsSync(DIST_PUBLIC_DIR) ? DIST_PUBLIC_DIR : SRC_PUBLIC_DI
 
 const HTML_FILE = join(PUBLIC_DIR, 'index.html')
 const DASHBOARD_HTML_FILE = join(PUBLIC_DIR, 'dashboard.html')
+const OFFLINE_HTML_FILE = join(PUBLIC_DIR, 'offline.html')
 const CSS_FILE = join(PUBLIC_DIR, 'assets', 'styles.css')
 const JS_FILE = join(PUBLIC_DIR, 'assets', 'app.js')
 const MANIFEST_FILE = join(PUBLIC_DIR, 'manifest.json')
@@ -53,6 +54,18 @@ export const registerRoutes = (app: App): void => {
     } catch (error) {
       logger.error('Failed to serve dashboard page', { error })
       res.status(500).send('<h1>Internal Server Error</h1>')
+    }
+  })
+
+  // Serve offline page
+  app.get('/offline', (req, res) => {
+    try {
+      const offlineContent = readFileSync(OFFLINE_HTML_FILE, 'utf-8')
+      logger.info('Offline page served')
+      res.type('html').send(offlineContent)
+    } catch (error) {
+      logger.error('Failed to serve offline page', { error })
+      res.status(500).send('<h1>Offline</h1><p>You are currently offline.</p>')
     }
   })
 
@@ -151,7 +164,7 @@ export const registerRoutes = (app: App): void => {
   // Keep the old simple root endpoint for fallback
   app.get('/simple', (req, res) => {
     logger.info('Simple root endpoint accessed')
-    res.send('<h1>Hello World from Sora v1.4.0</h1>')
+    res.send('<h1>Hello World from Sora v1.5.0</h1>')
   })
 
   app.get('/page/:page', (req, res) => {
@@ -218,7 +231,7 @@ export const registerRoutes = (app: App): void => {
     logger.infoContext('API status requested', { userAgent })
     res.json({
       service: 'Sora',
-      version: '1.4.0',
+      version: '1.5.0',
       status: 'operational',
       timestamp: new Date().toISOString()
     })
@@ -407,6 +420,81 @@ export const registerRoutes = (app: App): void => {
         error: 'Internal Server Error',
         message: 'Failed to process issue report'
       })
+    }
+  })
+
+  // Robots.txt for SEO
+  app.get('/robots.txt', (req, res) => {
+    const robotsContent = `# Sora - Gacha Game Reset Time Tracker
+# Allow all search engines to crawl
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://sora-time.xyz/sitemap.xml
+
+# Crawl delay (optional, respectful crawling)
+Crawl-delay: 1
+
+# Disallow admin/private areas (if any in future)
+Disallow: /api/
+`
+    logger.info('robots.txt served')
+    res.type('text/plain').send(robotsContent)
+  })
+
+  // Sitemap.xml for SEO
+  app.get('/sitemap.xml', (req, res) => {
+    try {
+      const games = loadGamesData()
+      const baseUrl = 'https://sora-time.xyz'
+      const lastmod = new Date().toISOString().split('T')[0]
+
+      // Build sitemap XML
+      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Main Pages -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/dashboard</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Game Pages (deep links for each game) -->
+`
+
+      games.forEach(game => {
+        const gameUrl = `${baseUrl}/?game=${game.id}`
+        const gameNameEscaped = game.name.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
+        sitemap += `  <url>
+    <loc>${gameUrl}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="${gameUrl}"/>
+  </url>
+`
+      })
+
+      sitemap += `</urlset>`
+
+      logger.info('sitemap.xml served', { gameCount: games.length })
+      res.type('application/xml').send(sitemap)
+    } catch (error) {
+      logger.error('Failed to generate sitemap', { error })
+      res.status(500).send('Failed to generate sitemap')
     }
   })
 }

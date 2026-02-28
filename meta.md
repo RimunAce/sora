@@ -17,7 +17,7 @@ This report helps identify bundle size issues, dependency bloat, and optimizatio
 
 | Metric | Value |
 |--------|-------|
-| Total output size | 48.74 KB |
+| Total output size | 52.14 KB |
 | Input modules | 1 |
 | Entry points | 1 |
 | ESM modules | 1 |
@@ -28,7 +28,7 @@ Modules sorted by bytes contributed to the output bundle. Large modules may indi
 
 | Output Bytes | % of Total | Module | Format |
 |--------------|------------|--------|--------|
-| 48.74 KB | 100.0% | `src/public/assets/app.js` | esm |
+| 52.14 KB | 100.0% | `src/public/assets/app.js` | esm |
 
 ## Entry Point Analysis
 
@@ -37,13 +37,13 @@ Each entry point and the total code it loads (including shared chunks).
 ### Entry: `src/public/assets/app.js`
 
 **Output file**: `./app.js`
-**Bundle size**: 48.74 KB
+**Bundle size**: 52.14 KB
 
 **Bundled modules** (sorted by contribution):
 
 | Bytes | Module |
 |-------|--------|
-| 48.74 KB | `src/public/assets/app.js` |
+| 52.14 KB | `src/public/assets/app.js` |
 
 ## Dependency Chains
 
@@ -56,7 +56,7 @@ Complete dependency information for each module.
 
 ### `src/public/assets/app.js`
 
-- **Output contribution**: 48.74 KB
+- **Output contribution**: 52.14 KB
 - **Format**: esm
 - **Imported by**: (entry point or orphan)
 
@@ -75,7 +75,7 @@ This section contains raw, grep-friendly data. Use these patterns:
 
 ```
 [MODULE: src/public/assets/app.js]
-[OUTPUT_BYTES: src/public/assets/app.js = 48736 bytes]
+[OUTPUT_BYTES: src/public/assets/app.js = 52143 bytes]
 [FORMAT: src/public/assets/app.js = esm]
 ```
 
@@ -92,6 +92,6 @@ This section contains raw, grep-friendly data. Use these patterns:
 ### Entry Points
 
 ```
-[ENTRY: src/public/assets/app.js -> ./app.js (48737 bytes)]
+[ENTRY: src/public/assets/app.js -> ./app.js (52144 bytes)]
 ```
 

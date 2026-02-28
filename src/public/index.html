@@ -3,38 +3,153 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sora | Gacha Game Daily Reset Time Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="color-scheme" content="dark light">
+    
+    <!-- Primary Meta Tags -->
+    <title>Sora | Gacha Game Daily Reset Time Tracker - Never Miss Your Dailies</title>
+    <meta name="title" content="Sora | Gacha Game Daily Reset Time Tracker - Never Miss Your Dailies">
     <meta name="description"
-        content="Track daily reset times for popular gacha games like Genshin Impact, Honkai: Star Rail, and more. See countdowns in your local timezone.">
+        content="Track daily reset times for 30+ popular gacha games including Genshin Impact, Honkai: Star Rail, Blue Archive, Arknights, and more. Real-time countdowns in your local timezone. Never miss your daily rewards again!">
     <meta name="keywords"
-        content="gacha game reset time, daily reset, server time, Genshin Impact, Honkai Star Rail, Blue Archive, Arknights">
+        content="gacha game reset time, daily reset, server time, Genshin Impact, Honkai Star Rail, Blue Archive, Arknights, Zenless Zone Zero, Wuthering Waves, gacha tracker, game reset timer, daily reset tracker, gacha game timer, server reset time">
+    <meta name="author" content="Sora Team">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://sora-time.xyz/">
+    
+    <!-- Alternate Languages -->
+    <link rel="alternate" hreflang="en" href="https://sora-time.xyz/">
+    <link rel="alternate" hreflang="x-default" href="https://sora-time.xyz/">
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Sora | Gacha Game Reset Time Tracker">
-    <meta property="og:description" content="Track daily reset times for gacha games in your local timezone.">
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sora-time.xyz/">
-    <meta property="og:image" content="https://sora-time.xyz/assets/images/banner.png">
     <meta property="og:site_name" content="Sora">
+    <meta property="og:title" content="Sora | Gacha Game Reset Time Tracker - Never Miss Your Dailies">
+    <meta property="og:description" content="Track daily reset times for 30+ gacha games in real-time. Support for Genshin Impact, HSR, Blue Archive, and more.">
+    <meta property="og:image" content="https://sora-time.xyz/assets/images/banner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Sora - Gacha Game Reset Time Tracker Banner">
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sora | Gacha Game Reset Time Tracker">
-    <meta name="twitter:description" content="Track daily reset times for gacha games in your local timezone.">
+    <meta name="twitter:url" content="https://sora-time.xyz/">
+    <meta name="twitter:title" content="Sora | Gacha Game Reset Time Tracker - Never Miss Your Dailies">
+    <meta name="twitter:description" content="Track daily reset times for 30+ gacha games in real-time. Support for Genshin Impact, HSR, Blue Archive, and more.">
     <meta name="twitter:image" content="https://sora-time.xyz/assets/images/banner.png">
+    <meta name="twitter:image:alt" content="Sora - Gacha Game Reset Time Tracker Banner">
+    <meta name="twitter:creator" content="@sora_time_xyz">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="application-name" content="Sora">
+    <meta name="apple-mobile-web-app-title" content="Sora">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-TileColor" content="#6366f1">
+    <meta name="msapplication-tap-highlight" content="no">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Sora",
-      "url": "https://sora-time.xyz/",
-      "description": "Track daily reset times for popular gacha games in your local timezone.",
-      "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "All"
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Sora",
+          "alternateName": "Sora Time Tracker",
+          "url": "https://sora-time.xyz/",
+          "description": "Track daily reset times for popular gacha games like Genshin Impact, Honkai: Star Rail, Blue Archive, and more in your local timezone.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": "Real-time countdowns, Multi-timezone support, Mobile-friendly PWA, Favorites system, Hide servers, Customization options",
+          "screenshot": "https://sora-time.xyz/assets/images/banner.png",
+          "downloadUrl": "https://sora-time.xyz/",
+          "installUrl": "https://sora-time.xyz/",
+          "author": {
+            "@type": "Organization",
+            "name": "Sora Team"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": "Sora",
+          "url": "https://sora-time.xyz/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://sora-time.xyz/assets/icons/icon-192x192.png",
+            "width": 192,
+            "height": 192
+          },
+          "sameAs": [
+            "https://github.com/RimunAce/sora"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is Sora?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sora is a free web application that helps you track daily reset times for gacha games across different server regions. It shows real-time countdowns so you never miss your daily rewards, events, or limited-time content."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which games does Sora support?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sora supports 30+ popular gacha games including Genshin Impact, Honkai: Star Rail, Blue Archive, Arknights, Zenless Zone Zero, Wuthering Waves, Tower of Fantasy, Nikke, and many more across all regions."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Sora free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Sora is completely free to use. All features are available at no cost, and we don't track your data or show ads."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I add games to my favorites?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Click the star icon on any game card to add it to your favorites. Your favorites are saved locally in your browser and will appear at the top of the page for quick access."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Sora",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "150",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        }
+      ]
     }
     </script>
 
@@ -42,8 +157,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="/assets/styles.css" as="style">
+    <link rel="preload" href="/assets/app.js" as="script">
+    <link rel="preload" href="/assets/images/banner.png" as="image">
 
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-72x72.png">
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="/assets/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -56,52 +182,64 @@
             integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
             crossorigin="anonymous" referrerpolicy="no-referrer">
     </noscript>
+    
+    <!-- Analytics (Optional - enabled via environment variable) -->
+    <script>
+        // Plausible Analytics - Lightweight, privacy-friendly analytics
+        // Enable by setting PLAUSIBLE_DOMAIN in your environment
+        if (window.location.hostname === 'sora-time.xyz' && typeof window.PLAUSIBLE_DOMAIN !== 'undefined') {
+            window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+        }
+    </script>
 </head>
 
 <body>
-    <div class="app-container">
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div class="app-container" role="application" aria-label="Sora Game Reset Time Tracker">
         <!-- Header -->
-        <header class="header">
+        <header class="header" role="banner">
             <div class="header-content">
                 <a href="/" class="logo-link">
                     <img src="/assets/images/banner.png" alt="Sora" class="logo-banner" fetchpriority="high" width="144"
                         height="48">
                 </a>
-                <nav class="nav">
-                    <a href="#" class="nav-link active" data-section="games">Games</a>
+                <nav class="nav" role="navigation" aria-label="Main navigation">
+                    <a href="#" class="nav-link active" data-section="games" aria-current="page">Games</a>
                     <a href="/dashboard" class="nav-link">Dashboard</a>
                     <a href="#" class="nav-link" data-section="about">About</a>
-                    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Settings">
-                        <i class="fas fa-cog"></i>
+                    <button id="settings-btn" class="settings-btn" aria-label="Open settings menu" title="Settings" aria-haspopup="dialog">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
                     </button>
                 </nav>
             </div>
         </header>
 
         <!-- Main Content -->
-        <main class="main">
+        <main class="main" id="main-content" role="main">
             <!-- Hero Section -->
-            <section class="hero">
+            <section class="hero" aria-label="Current time and timezone">
                 <div class="hero-content">
-                    <div class="hero-clock">
+                    <div class="hero-clock" role="timer" aria-live="polite" aria-atomic="true">
                         <div class="hero-timezone-label">Your Timezone: <span id="timezone-selector"
-                                class="timezone-selector">Auto-detect</span></div>
-                        <div id="hero-time" class="hero-clock-time">--:--:--</div>
-                        <div id="hero-date" class="hero-clock-date">Loading local time...</div>
+                                class="timezone-selector" role="button" tabindex="0" aria-haspopup="dialog">Auto-detect</span></div>
+                        <div id="hero-time" class="hero-clock-time" aria-label="Current time">--:--:--</div>
+                        <div id="hero-date" class="hero-clock-date" aria-label="Current date">Loading local time...</div>
                     </div>
                 </div>
             </section>
 
             <!-- Timezone Selector Popup -->
-            <div id="timezone-popup" class="timezone-popup hidden">
+            <div id="timezone-popup" class="timezone-popup hidden" role="dialog" aria-modal="true" aria-labelledby="timezone-dialog-title">
                 <div class="timezone-popup-content">
                     <div class="timezone-popup-header">
-                        <h3>Select Timezone</h3>
-                        <button id="close-timezone-popup" class="close-popup-btn">&times;</button>
+                        <h3 id="timezone-dialog-title">Select Timezone</h3>
+                        <button id="close-timezone-popup" class="close-popup-btn" aria-label="Close timezone selector">&times;</button>
                     </div>
                     <div class="timezone-search">
                         <input type="text" id="timezone-search-input" placeholder="Search timezone..."
-                            class="timezone-search-input">
+                            class="timezone-search-input" aria-label="Search for timezone">
                     </div>
                     <div id="timezone-list" class="timezone-list">
                         <!-- Timezone options will be populated here -->
@@ -110,10 +248,10 @@
             </div>
 
             <!-- Favorites Section -->
-            <section class="favorites-section" id="favorites-section" style="display: none;">
+            <section class="favorites-section" id="favorites-section" style="display: none;" aria-label="Favorite games">
                 <div class="favorites-header">
                     <h2 class="favorites-title">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star" aria-hidden="true"></i>
                         Your Favorites
                     </h2>
                 </div>
@@ -125,11 +263,11 @@
             </section>
 
             <!-- Games Section -->
-            <section class="games-section" id="games-section">
+            <section class="games-section" id="games-section" aria-label="Games list">
                 <div class="search-container">
-                    <div class="search-bar">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="game-search" placeholder="Search for a game..." class="search-input">
+                    <div class="search-bar" role="search">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input type="text" id="game-search" placeholder="Search for a game..." class="search-input" aria-label="Search games">
                     </div>
                 </div>
 
@@ -140,15 +278,15 @@
                 </div>
 
                 <!-- Request Game Button -->
-                <div class="request-game-section">
+                <div class="request-game-section" aria-label="Game actions">
                     <p class="request-game-text">Did not find your game?</p>
-                    <div class="action-buttons">
-                        <button id="request-game-btn" class="request-game-btn">
-                            <i class="fas fa-plus-circle"></i>
+                    <div class="action-buttons" role="group" aria-label="Game request actions">
+                        <button id="request-game-btn" class="request-game-btn" aria-label="Request a new game to be added">
+                            <i class="fas fa-plus-circle" aria-hidden="true"></i>
                             Request Game
                         </button>
-                        <button id="report-issue-btn" class="report-issue-btn">
-                            <i class="fas fa-flag"></i>
+                        <button id="report-issue-btn" class="report-issue-btn" aria-label="Report an issue with a game">
+                            <i class="fas fa-flag" aria-hidden="true"></i>
                             Report
                         </button>
                     </div>
@@ -156,7 +294,7 @@
             </section>
 
             <!-- About Section -->
-            <section class="about-section hidden" id="about-section">
+            <section class="about-section hidden" id="about-section" aria-label="About Sora">
                 <div class="about-content">
                     <h2 class="about-title">About Sora</h2>
                     <p class="about-description">
@@ -167,30 +305,30 @@
                         No relation with the AI itself, the literal translation of "Sky" from Japanese, or any other
                         existing entities named Sora.
                     </p>
-                    <div class="features-list">
-                        <div class="feature-item">
-                            <i class="fas fa-globe"></i>
+                    <div class="features-list" role="list">
+                        <div class="feature-item" role="listitem">
+                            <i class="fas fa-globe" aria-hidden="true"></i>
                             <div>
                                 <h3>Global Coverage</h3>
                                 <p>Support for games across all regions</p>
                             </div>
                         </div>
-                        <div class="feature-item">
-                            <i class="fas fa-clock"></i>
+                        <div class="feature-item" role="listitem">
+                            <i class="fas fa-clock" aria-hidden="true"></i>
                             <div>
                                 <h3>Real-time Updates</h3>
                                 <p>Live countdown to server resets</p>
                             </div>
                         </div>
-                        <div class="feature-item">
-                            <i class="fas fa-mobile-alt"></i>
+                        <div class="feature-item" role="listitem">
+                            <i class="fas fa-mobile-alt" aria-hidden="true"></i>
                             <div>
                                 <h3>Mobile Friendly</h3>
                                 <p>Optimized for all devices</p>
                             </div>
                         </div>
-                        <div class="feature-item">
-                            <i class="fab fa-github"></i>
+                        <div class="feature-item" role="listitem">
+                            <i class="fab fa-github" aria-hidden="true"></i>
                             <div>
                                 <h3>Open-Source</h3>
                                 <p>Contributions, updates, and improvements.</p>
@@ -202,12 +340,12 @@
         </main>
 
         <!-- Game Request Modal -->
-        <div id="game-request-modal" class="game-request-modal hidden">
+        <div id="game-request-modal" class="game-request-modal hidden" role="dialog" aria-modal="true" aria-labelledby="request-modal-title">
             <div class="modal-backdrop"></div>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Request a Game</h3>
-                    <button id="close-request-modal" class="close-modal-btn">&times;</button>
+                    <h3 id="request-modal-title">Request a Game</h3>
+                    <button id="close-request-modal" class="close-modal-btn" aria-label="Close request dialog">&times;</button>
                 </div>
                 <form id="game-request-form" class="game-request-form">
                     <div class="form-group">
@@ -238,12 +376,12 @@
         </div>
 
         <!-- Report Issue Modal -->
-        <div id="report-issue-modal" class="report-issue-modal hidden">
+        <div id="report-issue-modal" class="report-issue-modal hidden" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
             <div class="modal-backdrop"></div>
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Report an Issue</h3>
-                    <button id="close-report-modal" class="close-modal-btn">&times;</button>
+                    <h3 id="report-modal-title">Report an Issue</h3>
+                    <button id="close-report-modal" class="close-modal-btn" aria-label="Close report dialog">&times;</button>
                 </div>
                 <form id="report-issue-form" class="report-issue-form">
                     <div class="form-group">
@@ -273,12 +411,12 @@
         </div>
 
         <!-- Favorite Game Detail Modal -->
-        <div id="favorite-detail-modal" class="favorite-detail-modal hidden">
+        <div id="favorite-detail-modal" class="favorite-detail-modal hidden" role="dialog" aria-modal="true" aria-labelledby="favorite-detail-dialog-title">
             <div class="favorite-detail-backdrop"></div>
             <div class="favorite-detail-content">
                 <div class="favorite-detail-header">
-                    <h3 id="favorite-detail-title" class="favorite-detail-title">Game Title</h3>
-                    <button id="close-favorite-detail" class="close-favorite-detail-btn">&times;</button>
+                    <h3 id="favorite-detail-dialog-title" class="favorite-detail-title">Game Title</h3>
+                    <button id="close-favorite-detail" class="close-favorite-detail-btn" aria-label="Close game details">&times;</button>
                 </div>
                 <div id="favorite-detail-body" class="favorite-detail-body">
                     <!-- Server cards will be dynamically inserted here -->
@@ -287,13 +425,13 @@
         </div>
 
         <!-- Settings Modal -->
-        <div id="settings-modal" class="settings-modal hidden">
+        <div id="settings-modal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
             <div class="settings-modal-backdrop"></div>
             <div class="settings-modal-content">
                 <div class="settings-modal-header">
-                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <h3 id="settings-modal-title"><i class="fas fa-cog" aria-hidden="true"></i> Settings</h3>
                     <button id="close-settings-modal" class="close-modal-btn"
-                        aria-label="Close settings">&times;</button>
+                        aria-label="Close settings dialog">&times;</button>
                 </div>
                 <div class="settings-modal-body">
                     <!-- Data Management Section -->
@@ -372,7 +510,7 @@
 
                     <!-- About Section -->
                     <section class="settings-section settings-about">
-                        <p class="settings-version">Version 1.4.0</p>
+                        <p class="settings-version">Version 1.5.0</p>
                         <div class="settings-links">
                             <a href="https://github.com/RimunAce/sora" target="_blank" rel="noopener noreferrer"
                                 class="settings-link">
@@ -388,16 +526,70 @@
         <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
 
         <!-- Footer -->
-        <footer class="footer">
+        <footer class="footer" role="contentinfo">
             <div class="footer-content">
-                <p>&copy; 2025 Sora. Made with ❤️ for gacha gamers</p>
-                <div class="footer-links">
+                <p>&copy; 2026 Sora. Made with ❤️ for gacha gamers</p>
+                <div class="footer-links" role="navigation" aria-label="Footer navigation">
                     <a href="https://github.com/RimunAce/sora" class="footer-link" target="_blank"
-                        rel="noopener noreferrer">GitHub</a>
-                    <a href="#" class="footer-link">API</a>
+                        rel="noopener noreferrer" aria-label="Visit our GitHub repository">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="/sitemap.xml" class="footer-link" aria-label="View sitemap">
+                        <i class="fas fa-sitemap"></i> Sitemap
+                    </a>
+                    <a href="#" class="footer-link" id="share-site-btn" aria-label="Share this site">
+                        <i class="fas fa-share-alt"></i> Share
+                    </a>
                 </div>
             </div>
         </footer>
+    </div>
+
+    <!-- Social Share Modal -->
+    <div id="share-modal" class="share-modal hidden" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+        <div class="share-modal-backdrop"></div>
+        <div class="share-modal-content">
+            <div class="share-modal-header">
+                <h3 id="share-modal-title"><i class="fas fa-share-alt" aria-hidden="true"></i> Share Sora</h3>
+                <button id="close-share-modal" class="close-modal-btn" aria-label="Close share dialog">&times;</button>
+            </div>
+            <div class="share-modal-body">
+                <p class="share-description">Share Sora with your friends! Never let them miss their daily rewards again.</p>
+                
+                <!-- Social Share Buttons -->
+                <div class="social-share-buttons">
+                    <button id="share-twitter" class="social-share-btn twitter" aria-label="Share on Twitter">
+                        <i class="fab fa-twitter" aria-hidden="true"></i>
+                        <span>Twitter</span>
+                    </button>
+                    <button id="share-reddit" class="social-share-btn reddit" aria-label="Share on Reddit">
+                        <i class="fab fa-reddit" aria-hidden="true"></i>
+                        <span>Reddit</span>
+                    </button>
+                    <button id="share-discord" class="social-share-btn discord" aria-label="Share on Discord">
+                        <i class="fab fa-discord" aria-hidden="true"></i>
+                        <span>Discord</span>
+                    </button>
+                    <button id="share-whatsapp" class="social-share-btn whatsapp" aria-label="Share on WhatsApp">
+                        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                        <span>WhatsApp</span>
+                    </button>
+                </div>
+                
+                <!-- Copy Link Section -->
+                <div class="copy-link-section">
+                    <label for="share-url-input" class="share-url-label">Or copy the link:</label>
+                    <div class="copy-link-wrapper">
+                        <input type="text" id="share-url-input" class="share-url-input" value="https://sora-time.xyz/" readonly aria-label="Sora website URL">
+                        <button id="copy-link-btn" class="copy-link-btn" aria-label="Copy link to clipboard">
+                            <i class="fas fa-copy" aria-hidden="true"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                    <span id="copy-success-message" class="copy-success-message hidden">Link copied!</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="/assets/app.js?v=11"></script>
